@@ -11,9 +11,9 @@ int main()
 
         // Select a tree to build.
         cout << "Select a tree that what you want to create." << endl;
-        cout << "1 : binary tree" << endl;
+        cout << "1 : binary sort tree" << endl;
         cout << "2 : huffman tree" << endl;
-        cout << "3 : binary sort tree" << endl;
+        cout << "3 : heap" << endl;
         cout << "4 : heap" << endl
              << endl;
 
@@ -21,9 +21,9 @@ int main()
         cin >> sel;
 
         /*
-        1 : binary tree(Place the smaller number on the left, bigger number on the right)
+        1 : binary sort tree
         2 : huffman tree
-        3 : binary sort tree
+        3 : heap
         4 : heap
         */
 
@@ -33,12 +33,13 @@ int main()
         // 创建树
         binaryTree *tree;
         vector<binaryTree *> trees;
+        vector<int> staticHeap;
 
         // 选择创建树的方式
         switch (sel)
         {
 
-        // Create a binary tree
+        // Create a binary sort tree
         case 1:
             tree = new binaryTree();
             // 插入节点
@@ -49,7 +50,7 @@ int main()
 
                 // 输入0则停止插入
                 if (value)
-                    tree->treeInsert_normal(value);
+                    tree->treeInsert_sort(value);
                 else
                     break;
             }
@@ -76,8 +77,26 @@ int main()
             }
             break;
 
-        // Create a binary sort tree
+        // Create a heap
         case 3:
+            // 保存value至数组
+            while (true)
+            {
+                int32_t value;
+                cin >> value;
+
+                // 插入树节点至数组
+                if (value)
+                    staticHeap.push_back(value);
+
+                // 若输入0则停止插入,并创建堆
+                else
+                {
+                    tree = tree->buildHeap(staticHeap);
+                    break;
+                }
+            }
+            break;
             break;
 
         // Create a heap

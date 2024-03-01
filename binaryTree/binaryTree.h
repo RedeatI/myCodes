@@ -44,7 +44,7 @@ public:
      * @param value 节点的值
      * @return 如果创建成功返回true，否则返回false
      */
-    bool treeInsert_normal(int32_t value);
+    bool treeInsert_sort(int32_t value);
 
     /**
      * @brief 对哈夫曼树节点进行排序
@@ -58,6 +58,13 @@ public:
      * @return 哈夫曼树的根节点
      */
     binaryTree *buildHuffmanTree(std::vector<binaryTree *> &trees);
+
+    /**
+     * @brief 建立并返回堆
+     * @param trees 堆节点的数组
+     * @return 堆的根节点
+     */
+    binaryTree *buildHeap(std::vector<int> &staticHeap);
 
     /**
      * @brief 前序遍历
