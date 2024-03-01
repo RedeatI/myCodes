@@ -203,8 +203,25 @@ void binaryTree::fillMapWithXandY(vector<vector<string>> &treeMap, binaryTree *p
     }
 }
 
+/**
+ * Draws the binary tree in a tree-like structure.
+ *
+ * This function calculates the maximum depth of the tree and creates a tree map array
+ * to represent the tree structure. It performs a level-order traversal using a queue
+ * and assigns coordinates to each node in the tree map array. Finally, it prints the
+ * tree map to visualize the binary tree.
+ *
+ * @note This function assumes that the binary tree is not empty.
+ */
 void binaryTree::drawTheTree()
 {
+    // 若树为空则输出提示信息
+    if (this)
+    {
+        cout << "The tree is empty." << endl;
+        return;
+    }
+
     // 获取树的最大深度
     int32_t maxDeepth = this->findMaxDeepth();
 
