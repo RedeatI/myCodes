@@ -1,3 +1,4 @@
+#pragma once
 #include "binaryTree.h"
 #include <iostream>
 using namespace std;
