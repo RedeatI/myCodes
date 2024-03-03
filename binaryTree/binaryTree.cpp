@@ -3,6 +3,11 @@
 #include <iostream>
 using namespace std;
 
+// 标记为堆
+void binaryTree::isHeapTrue(){
+    this->isHeapTree = true;
+}
+
 // 以数组的方式创建堆
 binaryTree *buildHeapByArray(vector<int32_t> &staticHeap)
 {
@@ -36,6 +41,9 @@ binaryTree *buildHeapByArray(vector<int32_t> &staticHeap)
         // 当前节点出列
         treeQueue.pop();
     }
+
+    // 标记为堆
+    heap->isHeapTrue();
 
     // 返回堆
     return heap;
@@ -120,7 +128,9 @@ binaryTree::binaryTree()
     lchild = nullptr;
     rchild = nullptr;
     father = nullptr;
+    isBinarySortTree = false;
     isHuffmanTree = false;
+    isHeapTree = false;
 }
 
 // 构造函数
@@ -130,7 +140,15 @@ binaryTree::binaryTree(int32_t value)
     lchild = nullptr;
     rchild = nullptr;
     father = nullptr;
+    isBinarySortTree = false;
     isHuffmanTree = false;
+    isHeapTree = false;
+}
+
+// 判断是否为二叉排序树
+bool binaryTree::isBinarySort()
+{
+    return this->isBinarySortTree;
 }
 
 // 判断是否为哈夫曼树
@@ -139,9 +157,18 @@ bool binaryTree::isHuffman()
     return this->isHuffmanTree;
 }
 
+// 判断是否为堆
+bool binaryTree::isHeap()
+{
+    return this->isHeapTree;
+}
+
 // 根据方法一创建树
 bool binaryTree::treeInsert_sort(int32_t value)
 {
+    // 标记为二叉排序树
+    this->isBinarySortTree = true;
+
     // 创建p指针指向当前节点
     binaryTree *p = this;
 
@@ -199,7 +226,7 @@ void binaryTree::sortHuffmanTree(vector<binaryTree *> &trees)
 }
 
 // 建立并返回哈夫曼树
-binaryTree *binaryTree::buildHuffmanTree(vector<binaryTree *> &trees)
+binaryTree *binaryTree::buildHuffmanTree(vector<binaryTree *> trees)
 {
     int32_t n = trees.size();
 

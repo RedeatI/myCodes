@@ -18,7 +18,9 @@ private:
     int32_t value;
     int32_t x;
     int32_t y;
-    bool isHuffmanTree = false;
+    bool isBinarySortTree;
+    bool isHuffmanTree;
+    bool isHeapTree;
 
 public:
     // 二叉树节点,创建左右孩子以及父亲指针
@@ -34,10 +36,25 @@ public:
     binaryTree(int32_t value);
 
     /**
+     * @brief 判断是否为二叉排序树
+     * @return 如果是二叉排序树返回true，否则返回false
+     */
+    bool isBinarySort();
+
+    /**
      * @brief 判断是否为哈夫曼树
      * @return 如果是哈夫曼树返回true，否则返回false
      */
     bool isHuffman();
+
+    /**
+     * @brief 判断是否为堆
+     * @return 如果是堆返回true，否则返回false
+     */
+    bool isHeap();
+
+    // 标记为堆
+    void isHeapTrue();
 
     /**
      * @brief 根据方法一创建树
@@ -57,7 +74,7 @@ public:
      * @param trees 哈夫曼树节点的数组
      * @return 哈夫曼树的根节点
      */
-    binaryTree *buildHuffmanTree(std::vector<binaryTree *> &trees);
+    binaryTree *buildHuffmanTree(std::vector<binaryTree *> trees);
 
     /**
      * @brief 前序遍历

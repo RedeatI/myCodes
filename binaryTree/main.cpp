@@ -23,15 +23,15 @@ int main()
         /*
         1 : binary sort tree
         2 : huffman tree
-        3 : heap
-        4 : heap
+        3 : heap(筛选法)
+        4 : heap(插入法)
         */
 
         // 输入提示
         cout << "Please enter the numbers to build the tree.(0 to stop)" << endl;
 
         // 创建树
-        binaryTree *tree;
+        binaryTree *tree = nullptr;
         vector<binaryTree *> trees;
         vector<int> staticHeap;
 
@@ -142,8 +142,11 @@ int main()
         // 其他选项
         cout << "Others:" << endl;
         cout << "5 : Draw the tree" << endl;
+        cout << "10 : 增加节点" << endl;
+        cout << "11 : 删除节点" << endl;
         cout << "-1 : Rebuild the tree" << endl;
-        cout << "0 : exit the program" << endl;
+        cout << "0 : exit the program" << endl
+             << endl;
         cout << "other number : show the helps again" << endl;
 
         // set loop to judge whether to continue
@@ -207,21 +210,63 @@ int main()
                 }
                 break;
 
+            // 增加节点
+            case 10:
+                cout << "Please enter the numbers to insert the tree.(0 to stop)" << endl;
+                while (true)
+                {
+                    int32_t value;
+                    cin >> value;
+
+                    // 输入0则停止插入
+                    if (value == 0)
+                    {
+                        break;
+                    }
+                    else if (tree->isBinarySort())
+                    {
+                        tree->treeInsert_sort(value);
+                    }
+                    else if (tree->isHuffman())
+                    {
+                        trees.push_back(new binaryTree(value));
+                        // 重新构建哈夫曼树
+                        tree = tree->buildHuffmanTree(trees);
+                    }
+                    else if (tree->isHeap())
+                    {
+                        heapInsert(staticHeap, value);
+                        // 重新构建堆
+                        tree = buildHeapByArray(staticHeap);
+                    }
+                }
+                break;
+
+            // 删除节点
+            case 11:
+
+                break;
+
             // show the helps again
             default:
                 cout << endl
                      << endl;
-                cout << "Choose a way to traverse your tree" << endl;
+                cout << "Choose a way to traverse your tree" << endl
+                     << endl;
                 cout << "1 : Preorder Traversal" << endl;
                 cout << "2 : Inorder Traversal" << endl;
                 cout << "3 : Postorder Traversal" << endl;
-                cout << "4 : Level Order Traversal" << endl;
+                cout << "4 : Level Order Traversal" << endl
+                     << endl;
 
                 // 其他选项
                 cout << "Others:" << endl;
                 cout << "5 : Draw the tree" << endl;
+                cout << "10 : 增加节点" << endl;
+                cout << "11 : 删除节点" << endl;
                 cout << "-1 : Rebuild the tree" << endl;
-                cout << "0 : exit the program" << endl;
+                cout << "0 : exit the program" << endl
+                     << endl;
                 cout << "other number : show the helps again" << endl;
                 break;
             }
