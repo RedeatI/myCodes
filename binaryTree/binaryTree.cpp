@@ -113,6 +113,7 @@ binaryTree *buildHeapBySift(vector<int32_t> &staticHeap)
     return buildHeapByArray(staticHeap);
 }
 
+// 默认构造函数
 binaryTree::binaryTree()
 {
     value = 0;
@@ -122,6 +123,7 @@ binaryTree::binaryTree()
     isHuffmanTree = false;
 }
 
+// 构造函数
 binaryTree::binaryTree(int32_t value)
 {
     this->value = value;
@@ -131,11 +133,13 @@ binaryTree::binaryTree(int32_t value)
     isHuffmanTree = false;
 }
 
+// 判断是否为哈夫曼树
 bool binaryTree::isHuffman()
 {
     return this->isHuffmanTree;
 }
 
+// 根据方法一创建树
 bool binaryTree::treeInsert_sort(int32_t value)
 {
     // 创建p指针指向当前节点
@@ -186,6 +190,7 @@ bool binaryTree::treeInsert_sort(int32_t value)
     return false;
 }
 
+// 对哈夫曼树节点进行排序
 void binaryTree::sortHuffmanTree(vector<binaryTree *> &trees)
 {
     // 对哈夫曼树节点进行排序
@@ -193,6 +198,7 @@ void binaryTree::sortHuffmanTree(vector<binaryTree *> &trees)
          { return a->value < b->value; });
 }
 
+// 建立并返回哈夫曼树
 binaryTree *binaryTree::buildHuffmanTree(vector<binaryTree *> &trees)
 {
     int32_t n = trees.size();
@@ -219,6 +225,7 @@ binaryTree *binaryTree::buildHuffmanTree(vector<binaryTree *> &trees)
     return trees[n - 1];
 }
 
+// 前序遍历
 void binaryTree::preorderTraversal()
 {
     // 输出当前节点的值
@@ -233,6 +240,7 @@ void binaryTree::preorderTraversal()
         rchild->preorderTraversal();
 }
 
+// 中序遍历
 void binaryTree::inorderTraversal()
 {
     // 如果左孩子不为空则中序遍历左孩子
@@ -247,6 +255,7 @@ void binaryTree::inorderTraversal()
         rchild->inorderTraversal();
 }
 
+// 后序遍历
 void binaryTree::postorderTraversal()
 {
     // 如果左孩子不为空则后序遍历左孩子
@@ -261,6 +270,7 @@ void binaryTree::postorderTraversal()
     cout << value << " -> ";
 }
 
+// 层序遍历
 void binaryTree::levelOrderTraversal()
 {
     // 队列实现层序遍历
@@ -289,6 +299,7 @@ void binaryTree::levelOrderTraversal()
     }
 }
 
+// 寻找该树最大深度
 int32_t binaryTree::findMaxDeepth()
 {
     // 递归寻找最大深度
@@ -296,6 +307,7 @@ int32_t binaryTree::findMaxDeepth()
     return 1 + max(this->lchild ? this->lchild->findMaxDeepth() : 0, this->rchild ? this->rchild->findMaxDeepth() : 0);
 }
 
+// 将节点值转化为字符串并填充数组
 void binaryTree::fillMapWithXandY(vector<vector<string>> &treeMap, binaryTree *p, int32_t x, int32_t y)
 {
     // 将节点值转化为字符串并填充数组
@@ -313,16 +325,7 @@ void binaryTree::fillMapWithXandY(vector<vector<string>> &treeMap, binaryTree *p
     }
 }
 
-/**
- * Draws the binary tree in a tree-like structure.
- *
- * This function calculates the maximum depth of the tree and creates a tree map array
- * to represent the tree structure. It performs a level-order traversal using a queue
- * and assigns coordinates to each node in the tree map array. Finally, it prints the
- * tree map to visualize the binary tree.
- *
- * @note This function assumes that the binary tree is not empty.
- */
+// 利用坐标绘制树
 void binaryTree::drawTheTree()
 {
     // 若树为空则输出提示信息
@@ -411,6 +414,7 @@ void binaryTree::drawTheTree()
     }
 }
 
+// 求哈夫曼树的带权路径长度(WPL)
 int32_t binaryTree::findWPL(binaryTree *p, int32_t length)
 {
     // 若左右孩子均不为空，则返回左右孩子的WPL之和

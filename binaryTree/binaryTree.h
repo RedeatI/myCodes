@@ -58,7 +58,7 @@ public:
      * @return 哈夫曼树的根节点
      */
     binaryTree *buildHuffmanTree(std::vector<binaryTree *> &trees);
-    
+
     /**
      * @brief 前序遍历
      */
