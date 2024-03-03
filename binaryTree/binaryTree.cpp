@@ -3,6 +3,72 @@
 #include <iostream>
 using namespace std;
 
+// 以数组的方式创建堆
+binaryTree *buildHeapByArray(vector<int32_t> &staticHeap)
+{
+    // 创建堆
+    // 创建根节点
+    binaryTree *heap = new binaryTree(staticHeap[0]);
+
+    // 创建队列
+    queue<binaryTree *> treeQueue;
+
+    // 将根节点加入队列
+    treeQueue.push(heap);
+
+    // 逐步创建堆
+    for (int32_t i = 0; i < staticHeap.size() / 2; ++i)
+    {
+        // 若左孩子不为空，则创建左孩子
+        if (2 * i + 1 < staticHeap.size())
+        {
+            treeQueue.front()->lchild = new binaryTree(staticHeap[2 * i + 1]);
+            treeQueue.push(treeQueue.front()->lchild);
+        }
+
+        // 若右孩子不为空，则创建右孩子
+        if (2 * i + 2 < staticHeap.size())
+        {
+            treeQueue.front()->rchild = new binaryTree(staticHeap[2 * i + 2]);
+            treeQueue.push(treeQueue.front()->rchild);
+        }
+
+        // 当前节点出列
+        treeQueue.pop();
+    }
+
+    // 返回堆
+    return heap;
+}
+
+// 堆插入
+void heapInsert(vector<int32_t> &staticHeap, int32_t value)
+{
+    // 插入节点至数组
+    staticHeap.push_back(value);
+
+    // 调整堆
+    // 获取插入节点的下标
+    int32_t index = staticHeap.size() - 1;
+
+    // 获取父节点的下标
+    int32_t parent = (index - 1) / 2;
+
+    // 若插入节点大于父节点则交换
+    while (staticHeap[index] > staticHeap[parent])
+    {
+        // 交换节点
+        swap(staticHeap[index], staticHeap[parent]);
+
+        // 更新插入节点下标
+        index = parent;
+
+        // 更新父节点下标
+        parent = (index - 1) / 2;
+    }
+}
+
+// 堆调整
 void maxHeapify(vector<int> &staticHeap, int i, int n)
 {
     int l = 2 * i + 1;
@@ -29,6 +95,22 @@ void maxHeapify(vector<int> &staticHeap, int i, int n)
         // 递归调整堆
         maxHeapify(staticHeap, max, n);
     }
+}
+
+// 以筛选法创建堆
+binaryTree *buildHeapBySift(vector<int32_t> &staticHeap)
+{
+
+    int32_t n = staticHeap.size();
+
+    // 从最后一个非叶子节点开始调整堆
+    for (int32_t i = n / 2 - 1; i >= 0; --i)
+    {
+        maxHeapify(staticHeap, i, n);
+    }
+
+    // 返回堆
+    return buildHeapByArray(staticHeap);
 }
 
 binaryTree::binaryTree()
@@ -135,52 +217,6 @@ binaryTree *binaryTree::buildHuffmanTree(vector<binaryTree *> &trees)
 
     // 返回哈夫曼树
     return trees[n - 1];
-}
-
-binaryTree *binaryTree::buildHeap(vector<int> &staticHeap)
-{
-
-    int n = staticHeap.size();
-
-    // 从最后一个非叶子节点开始调整堆
-    for (int i = n / 2 - 1; i >= 0; --i)
-    {
-        maxHeapify(staticHeap, i, n);
-    }
-
-    // 创建堆
-    // 创建根节点
-    binaryTree *heap = new binaryTree(staticHeap[0]);
-
-    // 创建队列
-    queue<binaryTree *> treeQueue;
-
-    // 将根节点加入队列
-    treeQueue.push(heap);
-
-    // 逐步创建堆
-    for (int i = 0; i < n / 2; ++i)
-    {
-        // 若左孩子不为空，则创建左孩子
-        if (2 * i + 1 < n)
-        {
-            treeQueue.front()->lchild = new binaryTree(staticHeap[2 * i + 1]);
-            treeQueue.push(treeQueue.front()->lchild);
-        }
-
-        // 若右孩子不为空，则创建右孩子
-        if (2 * i + 2 < n)
-        {
-            treeQueue.front()->rchild = new binaryTree(staticHeap[2 * i + 2]);
-            treeQueue.push(treeQueue.front()->rchild);
-        }
-
-        // 当前节点出列
-        treeQueue.pop();
-    }
-
-    // 返回堆
-    return heap;
 }
 
 void binaryTree::preorderTraversal()

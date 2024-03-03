@@ -13,8 +13,8 @@ int main()
         cout << "Select a tree that what you want to create." << endl;
         cout << "1 : binary sort tree" << endl;
         cout << "2 : huffman tree" << endl;
-        cout << "3 : heap" << endl;
-        cout << "4 : heap" << endl
+        cout << "3 : heap(筛选法)" << endl;
+        cout << "4 : heap(插入法)" << endl
              << endl;
 
         int16_t sel;
@@ -77,7 +77,7 @@ int main()
             }
             break;
 
-        // Create a heap
+        // Create a heap(筛选法)
         case 3:
             // 保存value至数组
             while (true)
@@ -92,15 +92,28 @@ int main()
                 // 若输入0则停止插入,并创建堆
                 else
                 {
-                    tree = tree->buildHeap(staticHeap);
+                    tree = buildHeapBySift(staticHeap);
                     break;
                 }
             }
             break;
-            break;
 
-        // Create a heap
+        // Create a heap(插入法)
         case 4:
+            while (true)
+            {
+                int32_t value;
+                cin >> value;
+
+                // 如果输入0则停止插入
+                if (value)
+                    heapInsert(staticHeap, value);
+                else
+                {
+                    tree = buildHeapByArray(staticHeap);
+                    break;
+                }
+            }
             break;
 
         // Exit the program

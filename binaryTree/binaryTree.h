@@ -58,14 +58,7 @@ public:
      * @return 哈夫曼树的根节点
      */
     binaryTree *buildHuffmanTree(std::vector<binaryTree *> &trees);
-
-    /**
-     * @brief 建立并返回堆
-     * @param trees 堆节点的数组
-     * @return 堆的根节点
-     */
-    binaryTree *buildHeap(std::vector<int> &staticHeap);
-
+    
     /**
      * @brief 前序遍历
      */
