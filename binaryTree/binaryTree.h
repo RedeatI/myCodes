@@ -2,125 +2,121 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <queue>
 #include <cmath>
 #include <iomanip>
+#include <algorithm>
 
-// 二叉树节点类
 /**
- * @brief 二叉树类
+ * @class binaryTree 二叉树
+ * @brief Represents a binary tree data structure. 表示二叉树数据结构。
+ *
+ * The `binaryTree` class provides functionality to create, manipulate, and traverse a binary tree. 二叉树类提供了创建、操作和遍历二叉树的功能。
+ * It supports various operations such as insertion, deletion, sorting, and drawing of the tree. 支持各种操作，如插入、删除、排序和绘制树。
+ * It also provides methods to determine the type of the tree, such as binary sort tree, Huffman tree, or heap tree. 它还提供了确定树类型的方法，如二叉排序树、哈夫曼树或堆树。
+ *
+ * @note This class assumes that the binary tree contains nodes with integer values. 该类假设二叉树包含具有整数值的节点。
  */
 class binaryTree
 {
 private:
+    // Value of the node
     // 二叉树节点的值
     int32_t value;
+
+    // The x and y coordinates of the nodes required to draw the binary tree
+    // 绘制二叉树所需节点的x和y坐标
     int32_t x;
     int32_t y;
+
+public:
+    // The left and right child and parent of the node
+    // 节点的左右孩子和父节点
+    binaryTree *lchild, *rchild, *parent;
+
+    // The flag of the binary tree type
+    // 二叉树类型的标志
     bool isBinarySortTree;
     bool isHuffmanTree;
     bool isHeapTree;
 
-public:
-    // 二叉树节点,创建左右孩子以及父亲指针
-    binaryTree *lchild, *rchild, *father;
-
-    // 默认构造函数
+    // The constructor of the binary tree
+    // 二叉树的构造函数
     binaryTree();
 
-    /**
-     * @brief 构造函数
-     * @param value 节点的值
-     */
+    // The constructor of the binary tree with the value
+    // 二叉树的构造函数，带有值
     binaryTree(int32_t value);
 
-    /**
-     * @brief 判断是否为二叉排序树
-     * @return 如果是二叉排序树返回true，否则返回false
-     */
+    // Judge whether the tree is binary sort tree
+    // 判断树是否为二叉排序树
     bool isBinarySort();
 
-    /**
-     * @brief 判断是否为哈夫曼树
-     * @return 如果是哈夫曼树返回true，否则返回false
-     */
+    // Judge whether the tree is huffman tree
+    // 判断树是否为哈夫曼树
     bool isHuffman();
 
-    /**
-     * @brief 判断是否为堆
-     * @return 如果是堆返回true，否则返回false
-     */
+    // Judge whether the tree is heap tree
+    // 判断树是否为堆
     bool isHeap();
 
-    // 标记为堆
-    void isHeapTrue();
+    // Set the tree as binary sort tree
+    // 将树设置为二叉排序树
+    void BinarySortTrue();
 
-    /**
-     * @brief 根据方法一创建树
-     * @param value 节点的值
-     * @return 如果创建成功返回true，否则返回false
-     */
+    // Set the tree as huffman tree
+    // 将树设置为哈夫曼树
+    void HuffmanTrue();
+
+    // Set the tree as heap tree
+    // 将树设置为堆
+    void heapTrue();
+
+    // Insert a node into the binary tree
+    // 插入一个节点到二叉树中
     bool treeInsert_sort(int32_t value);
 
-    /**
-     * @brief 对哈夫曼树节点进行排序
-     * @param trees 哈夫曼树节点的数组
-     */
+    // Sort the huffman tree
+    // 排序哈夫曼树
     void sortHuffmanTree(std::vector<binaryTree *> &trees);
 
-    /**
-     * @brief 建立并返回哈夫曼树
-     * @param trees 哈夫曼树节点的数组
-     * @return 哈夫曼树的根节点
-     */
-    binaryTree *buildHuffmanTree(std::vector<binaryTree *> trees);
+    // Build the huffman tree
+    // 建立哈夫曼树
+    binaryTree *buildHuffmanTree(std::vector<int> &trees);
 
-    /**
-     * @brief 前序遍历
-     */
+    // Preorder traversal
+    // 前序遍历
     void preorderTraversal();
 
-    /**
-     * @brief 中序遍历
-     */
+    // Inorder traversal
+    // 中序遍历
     void inorderTraversal();
 
-    /**
-     * @brief 后序遍历
-     */
+    // Postorder traversal
+    // 后序遍历
     void postorderTraversal();
 
-    /**
-     * @brief 层序遍历
-     */
+    // Level order traversal
+    // 层次遍历
     void levelOrderTraversal();
 
-    /**
-     * @brief 寻找该树最大深度
-     * @return 树的最大深度
-     */
+    // Find max deepth of the tree
+    // 查找树的最大深度
     int32_t findMaxDeepth();
 
-    /**
-     * @brief 利用坐标绘制树
-     * @param treeMap 树状图数组
-     * @param tree 当前节点
-     * @param x 当前节点的行坐标
-     * @param y 当前节点的列坐标
-     */
+    // Using x and y of the nodes to draw the binary tree
+    // 利用节点的x和y绘制二叉树
     void fillMapWithXandY(std::vector<std::vector<std::string>> &treeMap, binaryTree *tree, int32_t x, int32_t y);
 
-    /**
-     * @brief 利用层序遍历绘制树
-     */
+    // Draw the tree
+    // 绘制树
     void drawTheTree();
 
-    /**
-     * @brief 求哈夫曼树的WPL
-     * @param p 当前节点
-     * @param length 当前节点到根节点的路径长度
-     * @return 哈夫曼树的WPL
-     */
+    // Find the weight path length of the huffman tree
+    // 查找哈夫曼树的带权路径长度
     int32_t findWPL(binaryTree *p, int32_t length);
+
+    // Delete a node from the sorted tree
+    // 从二叉排序树中删除一个节点
+    binaryTree *deleteNode_sortedTree(int32_t value);
 };
