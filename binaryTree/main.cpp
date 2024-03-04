@@ -19,7 +19,7 @@ int main()
 
         int16_t sel;
         cin >> sel;
-
+    
         // Ask the user to enter the numbers to build the tree.
         // 请用户输入要创建树的节点值。
         cout << "Please enter the numbers to build the tree.(0 to stop)" << endl;
@@ -313,7 +313,7 @@ int main()
                     }
                     else if (tree->isAVL())
                     {
-                        heapInsert(valueArray, value);
+                        valueArray.push_back(value);
                         tree = tree->treeInsert_AVL(tree, value);
                     }
                 }

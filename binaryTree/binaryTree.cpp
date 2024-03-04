@@ -998,7 +998,9 @@ binaryTree *binaryTree::treeInsert_AVL(binaryTree *p, int32_t value)
     // 若当前节点为空，则创建当前节点
     if (!p)
     {
-        return new binaryTree(value);
+        p = new binaryTree(value);
+        p->AVLTrue();
+        return p;
     }
 
     // If the insert value is less than the value of the current node, insert the left child
