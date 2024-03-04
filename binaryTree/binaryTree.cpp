@@ -125,16 +125,10 @@ binaryTree *buildHeapByArray(vector<int32_t> &valueArray)
     return heap;
 }
 
-// Insert a node to the heap by insert method
-// 通过插入法向堆中插入节点
-void heapInsert(vector<int32_t> &valueArray, int32_t value)
+// Adjust the heap by insert method
+// 通过插入法调整堆
+void heapSort(vector<int32_t> &valueArray)
 {
-    // Insert the node to the array
-    // 插入节点至数组
-    valueArray.push_back(value);
-
-    // Adjust the heap by insert method
-    // 通过插入法调整堆
     // Get the index of the inserted node
     // 获取插入节点的下标
     int32_t index = valueArray.size() - 1;
@@ -158,6 +152,16 @@ void heapInsert(vector<int32_t> &valueArray, int32_t value)
         // 更新插入节点的父节点
         parent = (index - 1) / 2;
     }
+}
+
+// Insert a node to the heap by insert method
+// 通过插入法向堆中插入节点
+void heapInsert(vector<int32_t> &valueArray, int32_t value)
+{
+    // Insert the node to the array
+    // 插入节点至数组
+    valueArray.push_back(value);
+    heapSort(valueArray);
 }
 
 // Adjust the heap by sift method
@@ -1023,4 +1027,3 @@ binaryTree *binaryTree::deleteNode_AVL(binaryTree *p, int32_t value)
     p = p->deleteNode_sortedTree(value);
     return p ? rotate(p) : p;
 }
-

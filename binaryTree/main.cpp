@@ -380,6 +380,7 @@ int main()
                             valueArray.erase(find(valueArray.begin(), valueArray.end(), value));
                             // Rebuild the heap
                             // 重新构建堆
+                            heapSort(valueArray);
                             tree = buildHeapByArray(valueArray);
                         }
                     }
