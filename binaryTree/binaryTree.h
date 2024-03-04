@@ -8,14 +8,20 @@
 #include <algorithm>
 
 /**
- * @class binaryTree 二叉树
- * @brief Represents a binary tree data structure. 表示二叉树数据结构。
+ * @class binaryTree
+ * 二叉树
+ * @brief Represents a binary tree data structure.
+ * 表示二叉树数据结构。
  *
- * The `binaryTree` class provides functionality to create, manipulate, and traverse a binary tree. 二叉树类提供了创建、操作和遍历二叉树的功能。
- * It supports various operations such as insertion, deletion, sorting, and drawing of the tree. 支持各种操作，如插入、删除、排序和绘制树。
- * It also provides methods to determine the type of the tree, such as binary sort tree, Huffman tree, or heap tree. 它还提供了确定树类型的方法，如二叉排序树、哈夫曼树或堆树。
+ * The `binaryTree` class provides functionality to create, manipulate, and traverse a binary tree.
+ * 二叉树类提供了创建、操作和遍历二叉树的功能。
+ * It supports various operations such as insertion, deletion, sorting, and drawing of the tree.
+ * 支持各种操作，如插入、删除、排序和绘制树。
+ * It also provides methods to determine the type of the tree, such as binary sort tree, Huffman tree, or heap tree.
+ * 它还提供了确定树类型的方法，如二叉排序树、哈夫曼树或堆树。
  *
- * @note This class assumes that the binary tree contains nodes with integer values. 该类假设二叉树包含具有整数值的节点。
+ * @note This class assumes that the binary tree contains nodes with integer values.
+ * 该类假设二叉树包含具有整数值的节点。
  */
 class binaryTree
 {
