@@ -368,6 +368,15 @@ void binaryTree::sortHuffmanTree(vector<binaryTree *> &trees)
 // 通过哈夫曼算法创建哈夫曼树
 binaryTree *binaryTree::buildHuffmanTree(vector<int> &valueArray)
 {
+    // Judge whether the array is empty
+    // 判断数组是否为空
+    if(valueArray.size() == 0)
+    {
+        cout << "The array is empty. 该数组为空。" << endl;
+        cout << "Created failed. 创建失败。" << endl;
+        return nullptr;
+    }
+    
     // Create array to store the huffman tree node
     // 创建数组存取哈夫曼树节点
     vector<binaryTree *> trees;
