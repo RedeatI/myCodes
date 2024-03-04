@@ -35,6 +35,10 @@ private:
     int32_t x;
     int32_t y;
 
+    // The height of the node
+    // 节点的高度
+    int height;
+
 public:
     // The left and right child and parent of the node
     // 节点的左右孩子和父节点
@@ -45,6 +49,7 @@ public:
     bool isBinarySortTree;
     bool isHuffmanTree;
     bool isHeapTree;
+    bool isAVLTree;
 
     // The constructor of the binary tree
     // 二叉树的构造函数
@@ -66,6 +71,10 @@ public:
     // 判断树是否为堆
     bool isHeap();
 
+    // Judge whether the tree is AVL tree
+    // 判断树是否为AVL树
+    bool isAVL();
+
     // Set the tree as binary sort tree
     // 将树设置为二叉排序树
     void BinarySortTrue();
@@ -77,6 +86,10 @@ public:
     // Set the tree as heap tree
     // 将树设置为堆
     void heapTrue();
+
+    // Set the tree as AVL tree
+    // 将树设置为AVL树
+    void AVLTrue();
 
     // Insert a node into the binary tree
     // 插入一个节点到二叉树中
@@ -125,4 +138,36 @@ public:
     // Delete a node from the sorted tree
     // 从二叉排序树中删除一个节点
     binaryTree *deleteNode_sortedTree(int32_t value);
+
+    // Get the height of the tree
+    // 获取树的高度
+    int32_t getHeight(binaryTree *p);
+
+    //Update the height of the tree
+    //更新树的高度
+    void updateHeight(binaryTree *p);
+
+    // Get the balance factor of the tree
+    // 获取树的平衡因子
+    int32_t getBalanceFactor(binaryTree *p);
+
+    // Right rotation
+    // 右旋
+    binaryTree *rightRotation(binaryTree *p);
+
+    // Left rotation
+    // 左旋
+    binaryTree *leftRotation(binaryTree *p);
+
+    // Rotate the tree
+    // 旋转树
+    binaryTree *rotate(binaryTree *p);
+
+    // Insert a node into the AVL tree
+    // 插入一个节点到AVL树中
+    binaryTree *treeInsert_AVL(binaryTree *p, int32_t value);
+
+    // Delete a node from the AVL tree
+    // 从AVL树中删除一个节点
+    binaryTree *deleteNode_AVL(binaryTree *p, int32_t value);
 };

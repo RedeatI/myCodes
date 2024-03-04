@@ -36,6 +36,7 @@ int main()
        2 : huffman tree(哈夫曼树)
        3 : heap(筛选法)
        4 : heap(插入法)
+       5 : AVL tree(AVL树)
        */
 
         // Select a tree to build.
@@ -139,6 +140,31 @@ int main()
                     break;
                 }
             }
+            break;
+        
+            // Create AVL tree
+            // 创建AVL树
+        case 5:
+            while (true)
+            {
+                int32_t value;
+                cin >> value;
+
+                // 0 to stop
+                // 输入0停止
+                // Insert the node to the AVL tree
+                // 插入节点至AVL树
+                if (value)
+                {
+                    valueArray.push_back(value);
+                    tree = tree->treeInsert_AVL(tree, value);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
             break;
 
             // Exit the program
@@ -282,6 +308,11 @@ int main()
                         // 重新构建堆
                         tree = buildHeapByArray(valueArray);
                     }
+                    else if(tree->isAVL())
+                    {
+                        heapInsert(valueArray, value);
+                        tree = tree->treeInsert_AVL(tree, value);
+                    }
                 }
                 cout << "Insert completed. 插入完成。" << endl;
                 break;
@@ -350,6 +381,20 @@ int main()
                             // Rebuild the heap
                             // 重新构建堆
                             tree = buildHeapByArray(valueArray);
+                        }
+                    }
+                    else if(tree->isAVL())
+                    {
+                        // If the node hasn't been found
+                        // 如果未找到节点
+                        if (find(valueArray.begin(), valueArray.end(), value) == valueArray.end())
+                        {
+                            cout << "The value is not found. 未找到该值的节点。" << endl;
+                        }
+                        else
+                        {
+                            valueArray.erase(find(valueArray.begin(), valueArray.end(), value));
+                            tree = tree->deleteNode_AVL(tree, value);
                         }
                     }
                 }

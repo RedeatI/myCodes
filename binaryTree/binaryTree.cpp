@@ -12,7 +12,8 @@ void firstAsk()
     cout << "1 : binary sort tree(二叉排序树)" << endl;
     cout << "2 : huffman tree(哈夫曼树)" << endl;
     cout << "3 : heap, Sift(堆，筛选法)" << endl;
-    cout << "4 : heap, Insert(堆，插入法)" << endl
+    cout << "4 : heap, Insert(堆，插入法)" << endl;
+    cout << "5 : AVL tree(平衡二叉树)" << endl
          << endl;
 }
 
@@ -63,6 +64,13 @@ void binaryTree::HuffmanTrue()
 void binaryTree::heapTrue()
 {
     this->isHeapTree = true;
+}
+
+// Mark as AVL tree
+// 标记为AVL树
+void binaryTree::AVLTrue()
+{
+    this->isAVLTree = true;
 }
 
 // Create a binary sort tree by array
@@ -213,6 +221,7 @@ binaryTree *buildHeapBySift(vector<int32_t> &valueArray)
 binaryTree::binaryTree()
 {
     value = 0;
+    height = 0;
     lchild = nullptr;
     rchild = nullptr;
     parent = nullptr;
@@ -226,6 +235,7 @@ binaryTree::binaryTree()
 binaryTree::binaryTree(int32_t value)
 {
     this->value = value;
+    height = 0;
     lchild = nullptr;
     rchild = nullptr;
     parent = nullptr;
@@ -253,6 +263,13 @@ bool binaryTree::isHuffman()
 bool binaryTree::isHeap()
 {
     return this->isHeapTree;
+}
+
+// Judge whether it is a AVL tree
+// 判断是否为AVL树
+bool binaryTree::isAVL()
+{
+    return this->isAVLTree;
 }
 
 // Create a binary sort tree by insert method
@@ -810,3 +827,200 @@ binaryTree *binaryTree::deleteNode_sortedTree(int32_t value)
         return this;
     }
 }
+
+// Get the height of the node
+// 获取节点的高度
+int32_t binaryTree::getHeight(binaryTree *p)
+{
+    return p == nullptr ? -1 : p->height;
+}
+
+// Update the height of the node
+// 更新节点的高度
+void binaryTree::updateHeight(binaryTree *p)
+{
+    p->height = max(getHeight(p->lchild), getHeight(p->rchild)) + 1;
+}
+
+// Get the balance factor of the node
+// 获取节点的平衡因子
+int32_t binaryTree::getBalanceFactor(binaryTree *p)
+{
+    return p == nullptr ? 0 : getHeight(p->lchild) - getHeight(p->rchild);
+}
+
+// Right rotation
+// 右旋
+binaryTree *binaryTree::rightRotation(binaryTree *p)
+{
+    // Create a pointer to the left child of the current node
+    // 创建指向当前节点左孩子的指针
+    binaryTree *lchild = p->lchild;
+
+    // Set the left child of the current node as the right child of the left child of the current node
+    // 将当前节点的左孩子的右孩子设为当前节点的左孩子
+    p->lchild = lchild->rchild;
+    lchild->parent = p->parent;
+    p->parent = lchild;
+    if (p->lchild)
+    {
+        p->lchild->parent = p;
+    }
+
+    // Set the right child of the left child of the current node as the current node
+    // 将当前节点的左孩子设为当前节点的左孩子的右孩子
+    lchild->rchild = p;
+
+    // Update the height of the current node
+    // 更新当前节点的高度
+    updateHeight(p);
+
+    // Update the height of the left child of the current node
+    // 更新当前节点的左孩子的高度
+    updateHeight(lchild);
+
+    // Return the left child of the current node
+    // 返回当前节点的左孩子
+    return lchild;
+}
+
+// Left rotation
+// 左旋
+binaryTree *binaryTree::leftRotation(binaryTree *p)
+{
+    // Create a pointer to the right child of the current node
+    // 创建指向当前节点右孩子的指针
+    binaryTree *rchild = p->rchild;
+
+    // Set the right child of the current node as the left child of the right child of the current node
+    // 将当前节点的右孩子的左孩子设为当前节点的右孩子
+    p->rchild = rchild->lchild;
+    rchild->parent = p->parent;
+    p->parent = rchild;
+    if (p->rchild)
+    {
+        p->rchild->parent = p;
+    }
+
+    // Set the left child of the right child of the current node as the current node
+    // 将当前节点的右孩子设为当前节点的右孩子的左孩子
+    rchild->lchild = p;
+
+    // Update the height of the current node
+    // 更新当前节点的高度
+    updateHeight(p);
+
+    // Update the height of the right child of the current node
+    // 更新当前节点的右孩子的高度
+    updateHeight(rchild);
+
+    // Return the right child of the current node
+    // 返回当前节点的右孩子
+    return rchild;
+}
+
+// Rotate the tree
+// 旋转树
+binaryTree *binaryTree::rotate(binaryTree *p)
+{
+    // Update the height of the current node
+    // 更新当前节点的高度
+    updateHeight(p);
+
+    // Get the balance factor of the current node
+    // 获取当前节点的平衡因子
+    int32_t balanceFactor = getBalanceFactor(p);
+
+    // If the balance factor is greater than 1
+    // 若平衡因子大于1 - 左偏树
+    if (balanceFactor > 1)
+    {
+        // If the balance factor of the left child of the current node is greater than 0
+        // 若当前节点的左孩子的平衡因子大于0
+        if (getBalanceFactor(p->lchild) > 0)
+        {
+            // Right rotation
+            // 右旋
+            return rightRotation(p);
+        }
+        // If the balance factor of the left child of the current node is less than 0
+        // 若当前节点的左孩子的平衡因子小于0
+        else
+        {
+            // Left rotation
+            // 左旋
+            p->lchild = leftRotation(p->lchild);
+            // Right rotation
+            // 右旋
+            return rightRotation(p);
+        }
+    }
+    // If the balance factor is less than -1
+    // 若平衡因子小于-1 - 右偏树
+    else if (balanceFactor < -1)
+    {
+        // If the balance factor of the right child of the current node is less than 0
+        // 若当前节点的右孩子的平衡因子小于0
+        if (getBalanceFactor(p->rchild) <= 0)
+        {
+            // Left rotation
+            // 左旋
+            return leftRotation(p);
+        }
+        // If the balance factor of the right child of the current node is greater than 0
+        // 若当前节点的右孩子的平衡因子大于0
+        else
+        {
+            // Right rotation
+            // 右旋
+            p->rchild = rightRotation(p->rchild);
+            // Left rotation
+            // 左旋
+            return leftRotation(p);
+        }
+    }
+
+    // Return the current node
+    // 返回当前节点
+    return p;
+}
+
+// Insert a node to the AVL tree
+// 向AVL树中插入节点
+binaryTree *binaryTree::treeInsert_AVL(binaryTree *p, int32_t value)
+{
+    // If the current node is empty, create the current node
+    // 若当前节点为空，则创建当前节点
+    if (!p)
+    {
+        return new binaryTree(value);
+    }
+
+    // If the insert value is less than the value of the current node, insert the left child
+    // 若插入值小于当前节点的值，则插入左孩子
+    if (value < p->value)
+    {
+        p->lchild = treeInsert_AVL(p->lchild, value);
+        p->lchild->parent = p;
+    }
+    // If the insert value is greater than the value of the current node, insert the right child
+    // 若插入值大于当前节点的值，则插入右孩子
+    else if (value > p->value)
+    {
+        p->rchild = treeInsert_AVL(p->rchild, value);
+        p->rchild->parent = p;
+    }
+
+    // Rotate the tree
+    // 旋转树
+    return rotate(p);
+}
+
+// Delete a node from the AVL tree
+// 从AVL树中删除节点
+binaryTree *binaryTree::deleteNode_AVL(binaryTree *p, int32_t value)
+{
+    p = p->deleteNode_sortedTree(value);
+    return p ? rotate(p) : p;
+}
+
