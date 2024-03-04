@@ -5,6 +5,9 @@ using namespace std;
 
 int main()
 {
+    // Set the console to UTF-8
+    system("chcp 65001");
+    
     // When user don't end the program, the program will continue to run.
     // 当用户不结束程序时，程序将继续运行。
     while (true)

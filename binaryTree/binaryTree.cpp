@@ -345,6 +345,7 @@ bool binaryTree::treeInsert_sort(int32_t value)
     else
     {
         cout << "Insert failed, don't enter the same number." << endl;
+        cout << "插入失败，不要输入相同的数字。" << endl;
         return false;
     }
 
