@@ -141,7 +141,7 @@ int main()
                 }
             }
             break;
-        
+
             // Create AVL tree
             // 创建AVL树
         case 5:
@@ -308,7 +308,7 @@ int main()
                         // 重新构建堆
                         tree = buildHeapByArray(valueArray);
                     }
-                    else if(tree->isAVL())
+                    else if (tree->isAVL())
                     {
                         heapInsert(valueArray, value);
                         tree = tree->treeInsert_AVL(tree, value);
@@ -383,7 +383,7 @@ int main()
                             tree = buildHeapByArray(valueArray);
                         }
                     }
-                    else if(tree->isAVL())
+                    else if (tree->isAVL())
                     {
                         // If the node hasn't been found
                         // 如果未找到节点
