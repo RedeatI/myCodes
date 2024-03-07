@@ -69,23 +69,23 @@ void showMap()
     for (int32_t i = 0; i <= width + 30; ++i)
     {
         gotoxy(i, 0);
-        putchar('#');
+        putchar(L'#');
         gotoxy(i, height);
-        putchar('#');
+        putchar(L'#');
     }
     for (int32_t i = 0; i <= height; ++i)
     {
         gotoxy(0, i);
-        putchar('#');
+        putchar(L'#');
         gotoxy(width, i);
-        putchar('#');
+        putchar(L'#');
     }
     for (int32_t i = 0; i <= height; ++i)
     {
         gotoxy(0, i);
-        putchar('#');
+        putchar(L'#');
         gotoxy(width + 30, i);
-        putchar('#');
+        putchar(L'#');
     }
 }
 
@@ -253,7 +253,7 @@ public:
     void showFood()
     {
         gotoxy(x, y);
-        putchar('@');
+        putchar(L'@');
     }
 };
 
@@ -390,7 +390,7 @@ public:
         while (temp != nullptr)
         {
             gotoxy(temp->x, temp->y);
-            putchar('*');
+            putchar(L'*');
             temp = temp->next;
         }
     }
@@ -448,17 +448,17 @@ public:
 
             // Increase the speed and score
             // 增加速度和分数
-            if (speed < 20)
+            if (speed < 15)
             {
-                speed += 10;
+                speed += 5;
                 score += 10;
             }
-            else if (speed >= 20 && speed <= 40)
+            else if (speed >= 15 && speed <= 25)
             {
                 speed += 3;
                 score += 20;
             }
-            else if (speed >= 40 && speed <= 50)
+            else if (speed >= 25 && speed <= 34)
             {
                 speed += 2;
                 score += 30;
@@ -562,9 +562,13 @@ int main()
             // start the game
             // 开始游戏
             game_over = false;
-            
+
             while (!game_over)
             {
+                // the default direction of the snake is right
+                // 蛇的默认方向是向右
+                char key = 'd';
+
                 int32_t speed = 0;
                 int32_t score = 0;
                 system("cls");
@@ -574,9 +578,7 @@ int main()
                 pHead->initSnake();
                 pHead->checkAndCreateFood(pHead, pFood);
                 pHead->showSnake();
-                // the default direction of the snake is right
-                // 蛇的默认方向是向右
-                char key = 'd';
+
                 while (!game_over)
                 {
                     // get the player's input
@@ -616,7 +618,14 @@ int main()
 
                     // control the speed of the game
                     // 控制游戏的速度
-                    Sleep(80 - speed);
+                    if (key == 'a' || key == 'd')
+                    {
+                        Sleep(60 - speed * 0.7);
+                    }
+                    else
+                    {
+                        Sleep(80 - speed);
+                    }
                 }
                 system("cls");
 
@@ -663,7 +672,7 @@ int main()
                     // 退出循环
                     break;
                 }
-                
+
                 game_over = false;
             }
         }
