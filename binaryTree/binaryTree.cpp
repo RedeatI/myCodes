@@ -882,7 +882,7 @@ binaryTree *binaryTree::rightRotation(binaryTree *p)
     }
 
     // Set the right child of the left child of the current node as the current node
-    // 将当前节点的左孩子设为当前节点的左孩子的右孩子
+    // 将当前节点设为左孩子的右孩子
     lchild->rchild = p;
 
     // Update the height of the current node
@@ -917,7 +917,7 @@ binaryTree *binaryTree::leftRotation(binaryTree *p)
     }
 
     // Set the left child of the right child of the current node as the current node
-    // 将当前节点的右孩子设为当前节点的右孩子的左孩子
+    // 将当前节点设为右孩子的左孩子
     rchild->lchild = p;
 
     // Update the height of the current node
