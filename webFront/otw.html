@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>望断天涯</title>
+    <style>
+        body {
+            font-family: '宋体', serif;
+            font-size: 12px;
+            background-color: #e9f0f5;
+        }
+
+        .header {
+            background-image: url("IMAGES/TOP_BG.GIF");
+            background-size: 100% 100%;
+            height: 200px;
+        }
+
+        .nav {
+            background-color: #dee1e4;
+            text-align: center;
+        }
+
+        .nav a {
+            display: inline-block;
+            color: rgb(65, 63, 63);
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .container {
+            display: flex;
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        .sidebar {
+            width: 25%;
+            padding: 10px;
+        }
+
+        .main-content {
+            width: 75%;
+            padding: 10px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin-top: 20px;
+        }
+
+        .form-section input[type="text"],
+        .form-section input[type="password"] {
+            width: 75%;
+            background-color: rgb(237, 237, 237);
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+        }
+
+        .form-section button {
+            border: rgb(236, 236, 236);
+            padding: 10px 15px;
+            margin: 5px 0;
+            background-color: #dedede;
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+        }
+
+        .form-section button:hover {
+            background-color: #767676;
+        }
+
+        .sidebar h3,
+        .main-content h3 {
+            margin-bottom: 10px;
+        }
+
+        .image-with-text-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .image-with-text-right {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .image-overlay {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-overlay img {
+            width: 185%;
+            height: auto;
+        }
+
+        .image-overlay h3 {
+            position: absolute;
+            top: 0;
+            left: 80px;
+        }
+
+        .centered-content {
+            background-color: rgb(236, 236, 236);
+            text-align: center;
+        }
+
+        .centered-content a {
+            color: rgb(39, 38, 38);
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        window.onload = function () {
+            document.getElementById("signButton").onclick = function () {
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+
+                if (username.length < 6 || password.length < 6) {
+                    alert("用户名和密码不能少于6位");
+                    return false;
+                }
+            };
+            document.getElementById("loginButton").onclick = function () {
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+
+                if (username.length < 6 || password.length < 6) {
+                    alert("用户名和密码不能少于6位");
+                    return false;
+                }
+            };
+        };
+    </script>
+</head>
+
+<body>
+    <div class="header"></div>
+    <div class="nav">
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">首页</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">等待加入</a>
+        <img src="IMAGES/navbar_Separator.gif">
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <div class="card form-section">
+                <img src="IMAGES/TOP_BBS.GIF" width="100%">
+                <form id="loginForm">
+                    <label for="username">用户名:</label>
+                    <input type="text" id="username" name="username"><br>
+                    <label for="password">密&nbsp;码:</label>
+                    <input type="password" id="password" name="password"><br>
+                    &nbsp;&nbsp;
+                    <button type="button" id="loginButton">登录</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" id="signButton">注册</button>
+                </form>
+            </div>
+            <div class="card">
+                <img src="IMAGES/TOP_WAP.GIF" width="100%">
+                <div class="image-with-text-left">
+                    <img src="IMAGES/WAP.JPG" style="margin-right: 20px;margin-left: 20px;">
+                    <p>希望大家能够喜欢本站<br>
+                        欢迎给我意见~<br>
+                        QQ: <br>E-MAIL:</p>
+                </div>
+            </div>
+            <div class="card">
+                <img src="IMAGES/TOP_PIC.GIF" width="100%">
+                <p style="color: rgb(77, 152, 237);"><img src="IMAGES/ARROW_Z.GIF">姓名: <br><img
+                        src="IMAGES/ARROW_Z.GIF">性别: <br><img src="IMAGES/ARROW_Z.GIF">爱好: <br><img
+                        src="IMAGES/ARROW_Z.GIF">籍贯: <br><img src="IMAGES/ARROW_Z.GIF">生日: <br><img
+                        src="IMAGES/ARROW_Z.GIF">血型: <br><img src="IMAGES/ARROW_Z.GIF">签名: <br><img
+                        src="IMAGES/ARROW_Z.GIF">个人介绍:</p>
+            </div>
+            <div class="card">
+                <h3>友情链接</h3>
+
+                <!-- 添加你的链接信息 -->
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="card">
+                <div class="image-overlay">
+                    <img src="IMAGES/HE.GIF">
+                    <h3>最新动态</h3>
+                </div>
+                <div class="image-with-text-left">
+                    <img src="IMAGES/NEWS.JPG" style="margin-right: 20px;margin-left: 20px;">
+                    <p><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">模板收集与提供<br><img
+                            src="IMAGES/ARROW_Z.GIF">更多，更好的模板，请来模板天下<br><img src="IMAGES/ARROW_Z.GIF"><br><img
+                            src="IMAGES/ARROW_Z.GIF"><br><img src="IMAGES/ARROW_Z.GIF"><br><img
+                            src="IMAGES/ARROW_Z.GIF"></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="image-overlay">
+                    <img src="IMAGES/HE.GIF">
+                    <h3>极品下载</h3>
+                </div>
+                <div class="image-with-text-right">
+                    <p><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">模板收集与提供<br><img
+                            src="IMAGES/ARROW_Z.GIF">更多，更好的模板，请来模板天下<br><img src="IMAGES/ARROW_Z.GIF"><br><img
+                            src="IMAGES/ARROW_Z.GIF"><br><img src="IMAGES/ARROW_Z.GIF"><br><img
+                            src="IMAGES/ARROW_Z.GIF"></p>
+                    <img src="IMAGES/RING.JPG" style="margin-right: 20px;margin-left: 20px;">
+                </div>
+            </div>
+            <div class="card">
+                <div class="image-overlay">
+                    <img src="IMAGES/HE.GIF">
+                    <h3>时事新闻</h3>
+                </div>
+                <div class="image-with-text-left">
+                    <img src="IMAGES/XLH.JPG" style="margin-right: 20px;margin-left: 20px;">
+                    <p><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img
+                            src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img
+                            src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">等待加入</p>
+                </div>
+                <p style="text-align: right; margin-bottom: 0px;"><a href="#"
+                        style="color: black; text-decoration: none;">更多...</a><img src="IMAGES/JR.GIF"></p>
+            </div>
+            <div class="card">
+                <div class="image-overlay">
+                    <img src="IMAGES/HE.GIF">
+                    <h3>论坛新帖</h3>
+                </div>
+                <div class="image-with-text-right">
+                    <p><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img src="IMAGES/ARROW_Z.GIF">等待加入<br><img
+                            src="IMAGES/ARROW_Z.GIF">等待加入</p>
+                    <img src="IMAGES/COFFEE.GIF" style="margin-right: 20px;margin-left: 20px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="centered-content">
+        <a href="https://www.xujc.com">关于本站</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">友情链接</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="#">访客留言</a>
+        <img src="IMAGES/navbar_Separator.gif">
+        <a href="mailto:example@example.com">联系我们</a>
+    </div>
+    <footer>
+        CopyRight © 2004-2018 all right Reserved Best view 800*600
+    </footer>
+</body>
+
+</html>
