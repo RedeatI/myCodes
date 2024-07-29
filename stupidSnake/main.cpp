@@ -488,7 +488,7 @@ int main()
 
     // play the background music
     // 播放背景音乐
-    PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    PlaySound(TEXT("TimeWar.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     // get the player's name
     // 获取玩家的名字
@@ -562,6 +562,9 @@ int main()
             // start the game
             // 开始游戏
             game_over = false;
+
+            PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+            PlaySound(TEXT("battle1.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
             while (!game_over)
             {
