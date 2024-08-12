@@ -1,0 +1,3 @@
+Modification,Processed Images,Average Processing Time (s),Accuracy (%),Process Speed (FPS)
+detect_level=0,100,0.1101,42.0000%,9.0834
+detect_level=1,100,0.1212,46.0000%,8.2490
