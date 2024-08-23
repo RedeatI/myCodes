@@ -10,7 +10,8 @@
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-std=c++20"
+                "-std=c++20",
+                "-lwinmm"
             ],
             "options": {
                 "cwd": "${fileDirname}"

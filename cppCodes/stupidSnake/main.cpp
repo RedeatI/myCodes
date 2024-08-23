@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <mmsystem.h>
 #include <limits>
+#include <stack>
+#include <memory>
 
 // Judge whether the game is over
 // 判断游戏是否结束
@@ -260,11 +262,10 @@ public:
 class snake
 {
 public:
-    int32_t x;
-    int32_t y;
-    snake *next;
-    snake *prev;
-    snake *tail;
+    int32_t x, y;
+    std::shared_ptr<snake> next;
+    std::shared_ptr<snake> prev;
+    std::shared_ptr<snake> tail;
 
     snake(int32_t x, int32_t y)
     {
@@ -279,14 +280,14 @@ public:
     // 初始化蛇
     void initSnake()
     {
-        snake *p = this->next;
-        snake *q = this;
+        std::shared_ptr<snake> p = this->next;
+        std::shared_ptr<snake> q = std::shared_ptr<snake>(this);
 
         // Create the snake
         // 创建蛇
         for (int i = 1; i <= 10; ++i)
         {
-            p = new snake(width / 2 - i, height / 2);
+            p = std::shared_ptr<snake>(new snake(width / 2 - i, height / 2));
 
             // Set the next and prev pointer
             // 设置next和prev指针
@@ -306,7 +307,7 @@ public:
 
     // Judge whether the snake is dead
     // 判断蛇是否死亡
-    bool isSnakeDeath(snake *pHead)
+    bool isSnakeDeath(std::shared_ptr<snake> pHead)
     {
         // Judge whether the snake is out of the map
         // 判断蛇是否超出地图
@@ -317,7 +318,7 @@ public:
 
         // Judge whether the snake bites itself
         // 判断蛇是否咬到自己
-        snake *temp = tail;
+        std::shared_ptr<snake> temp = tail;
         // Traverse the snake
         // 遍历蛇
         while (temp->prev != pHead)
@@ -333,7 +334,7 @@ public:
 
     // Move the snake
     // 移动蛇
-    bool move(snake *pHead, char key)
+    bool move(std::shared_ptr<snake> pHead, char key)
     {
         // Clear the tail of the snake
         // 清除蛇的尾巴
@@ -341,7 +342,7 @@ public:
 
         // Move the snake from the tail to the head
         // 从尾巴到头部移动蛇
-        snake *temp = tail;
+        std::shared_ptr<snake> temp = tail;
         while (temp != pHead)
         {
             temp->x = temp->prev->x;
@@ -390,14 +391,14 @@ public:
         while (temp != nullptr)
         {
             gotoxy(temp->x, temp->y);
-            putchar(L'*');
-            temp = temp->next;
+            putchar('*');
+            temp = temp->next.get(); // 使用 get() 获取原始指针
         }
     }
 
     // Check and create the food
     // 检查并创建食物
-    void checkAndCreateFood(snake *pHead, food *pFood)
+    void checkAndCreateFood(std::shared_ptr<snake> &pHead, std::unique_ptr<food> &pFood)
     {
         // Create the food
         // 创建食物
@@ -405,7 +406,7 @@ public:
 
         // Traverse the snake
         // 遍历蛇
-        snake *temp = pHead;
+        std::shared_ptr<snake> temp(pHead);
         while (temp != nullptr)
         {
             // Judge whether the food is in the snake
@@ -430,7 +431,7 @@ public:
 
     // Eat the food
     // 吃食物
-    void eatFood(snake *pHead, food *pFood, int32_t &score, int32_t &speed)
+    void eatFood(std::shared_ptr<snake> pHead, std::unique_ptr<food> &pFood, int32_t &score, int32_t &speed)
     {
         // Judge whether the snake eats the food
         // 判断蛇是否吃到食物
@@ -442,7 +443,7 @@ public:
 
             // Create a new snake body
             // 创建一个新的蛇身
-            snake *p = new snake(99, 99);
+            std::shared_ptr<snake> p(new snake(99, 99));
             p->prev = pHead->tail;
             pHead->tail = p;
 
@@ -473,7 +474,7 @@ public:
 
     // Clear the snake
     // 清除蛇
-    inline void clearSnake(snake *tail)
+    inline void clearSnake(std::shared_ptr<snake> tail)
     {
         gotoxy(tail->x, tail->y);
         putchar(' ');
@@ -488,7 +489,7 @@ int main()
 
     // play the background music
     // 播放背景音乐
-    PlaySound(TEXT("TimeWar.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    // PlaySound(TEXT("TimeWar.mp3"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
     // get the player's name
     // 获取玩家的名字
@@ -564,7 +565,7 @@ int main()
             game_over = false;
 
             PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-            PlaySound(TEXT("battle1.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+            PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
 
             while (!game_over)
             {
@@ -572,18 +573,21 @@ int main()
                 // 蛇的默认方向是向右
                 char key = 'd';
 
+                std::shared_ptr<snake> pHead(new snake(width / 2, height / 2));
+                std::unique_ptr<food> pFood(new food);
+
                 int32_t speed = 0;
                 int32_t score = 0;
                 system("cls");
                 showMap();
-                snake *pHead = new snake(width / 2, height / 2);
-                food *pFood = new food;
                 pHead->initSnake();
                 pHead->checkAndCreateFood(pHead, pFood);
                 pHead->showSnake();
 
                 while (!game_over)
                 {
+                    std::cin.clear();
+
                     // get the player's input
                     // 获取玩家的输入
                     if ((GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W')) && key != 's')
@@ -630,6 +634,7 @@ int main()
                         Sleep(80 - speed);
                     }
                 }
+
                 system("cls");
 
                 // show the game over message
@@ -664,19 +669,20 @@ int main()
                     c = _getch();
                 }
 
-                // if the player chooses to exit the game, delete the snake and the food
-                // 如果玩家选择退出游戏，就删除蛇和食物
+                // if the player chooses to exit the game
+                // 如果玩家选择退出游戏
                 if (c == 'n' || c == 'N')
                 {
-                    delete pFood;
-                    delete pHead;
-
                     // break the loop
                     // 退出循环
                     break;
                 }
-
-                game_over = false;
+                else if (c == 'y' || c == 'Y')
+                {
+                    // continue the game
+                    // 继续游戏
+                    game_over = false;
+                }
             }
         }
         // if the player enters an invalid input
