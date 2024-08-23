@@ -3,3 +3,6 @@
 *.exe
 *.txt
 *.zip
+/pyCodes/CarCheck/temp
+pyCodes/openai/OPENAI_API_KEY
+/cppCodes/randomArea
