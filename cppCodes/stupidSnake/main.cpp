@@ -12,6 +12,37 @@
 #include <limits>
 #include <stack>
 #include <memory>
+#include <map>
+
+enum Direction
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT
+};
+
+std::map<char, Direction> keyToDirection = {
+    {'w', Direction::UP},
+    {'s', Direction::DOWN},
+    {'a', Direction::LEFT},
+    {'d', Direction::RIGHT},
+    {'W', Direction::UP},
+    {'S', Direction::DOWN},
+    {'A', Direction::LEFT},
+    {'D', Direction::RIGHT},
+    {VK_UP, Direction::UP},
+    {VK_DOWN, Direction::DOWN},
+    {VK_LEFT, Direction::LEFT},
+    {VK_RIGHT, Direction::RIGHT},
+};
+
+std::map<Direction, Direction> unAllowedKey = {
+    {Direction::UP, Direction::DOWN},
+    {Direction::DOWN, Direction::UP},
+    {Direction::LEFT, Direction::RIGHT},
+    {Direction::RIGHT, Direction::LEFT},
+};
 
 // Judge whether the game is over
 // 判断游戏是否结束
@@ -334,7 +365,7 @@ public:
 
     // Move the snake
     // 移动蛇
-    bool move(std::shared_ptr<snake> pHead, char key)
+    bool move(std::shared_ptr<snake> pHead, Direction key)
     {
         // Clear the tail of the snake
         // 清除蛇的尾巴
@@ -352,19 +383,19 @@ public:
 
         // Check the key
         // 检查按键
-        if (key == 'w')
+        if (key == Direction::UP)
         {
             pHead->y--;
         }
-        else if (key == 's')
+        else if (key == Direction::DOWN)
         {
             pHead->y++;
         }
-        else if (key == 'a')
+        else if (key == Direction::LEFT)
         {
             pHead->x--;
         }
-        else if (key == 'd')
+        else if (key == Direction::RIGHT)
         {
             pHead->x++;
         }
@@ -564,48 +595,94 @@ int main()
             // 开始游戏
             game_over = false;
 
-            PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-            PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-
             while (!game_over)
             {
-                // the default direction of the snake is right
-                // 蛇的默认方向是向右
-                char key = 'd';
+                // check is BGM exist
+                // 检查背景音乐是否存在
+                if (GetFileAttributes(TEXT("bgm.wav")) == INVALID_FILE_ATTRIBUTES)
+                {
+                    system("cls");
+                    gotoxy(width / 2, height / 2);
+                    std::cout << "BGM file not found! BGM文件未找到!" << std::endl;
+                    gotoxy(width / 2 - 4, height / 2 + 1);
+                    system("pause");
+                    continue;
+                }
+                else
+                {
+                    PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+                    PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+                }
 
                 std::shared_ptr<snake> pHead(new snake(width / 2, height / 2));
                 std::unique_ptr<food> pFood(new food);
 
-                int32_t speed = 0;
+                int32_t speed = 5;
                 int32_t score = 0;
+
                 system("cls");
                 showMap();
                 pHead->initSnake();
                 pHead->checkAndCreateFood(pHead, pFood);
                 pHead->showSnake();
 
+                // 检查按键状态的函数
+                auto checkKeyState = [](Direction currentKey, int vkKey, char keyChar, bool &change) -> Direction
+                {
+                    if (!change)
+                    {
+                        return currentKey;
+                    }
+
+                    if (GetAsyncKeyState(vkKey) || GetAsyncKeyState(keyChar))
+                    {
+                        auto key = keyToDirection[keyChar];
+                        if (unAllowedKey[currentKey] != key)
+                        {
+                            change = false;
+                            return key;
+                        }
+                    }
+                    return currentKey;
+                };
+
+                // 清除按键状态的函数
+                auto clearKeyStates = []() -> void
+                {
+                    GetAsyncKeyState(VK_UP);
+                    GetAsyncKeyState(VK_DOWN);
+                    GetAsyncKeyState(VK_LEFT);
+                    GetAsyncKeyState(VK_RIGHT);
+                    GetAsyncKeyState('W');
+                    GetAsyncKeyState('S');
+                    GetAsyncKeyState('A');
+                    GetAsyncKeyState('D');
+                };
+
+                // the default direction of the snake is right
+                // 蛇的默认方向是向右
+                Direction key = Direction::RIGHT;
+
+                auto getPlayerInput = [&]() -> Direction
+                {
+                    bool change = true;
+
+                    key = checkKeyState(key, VK_UP, 'W', change);
+                    key = checkKeyState(key, VK_DOWN, 'S', change);
+                    key = checkKeyState(key, VK_LEFT, 'A', change);
+                    key = checkKeyState(key, VK_RIGHT, 'D', change);
+                    return key;
+                };
+
+                // 清除按键状态
+                clearKeyStates();
+
                 while (!game_over)
                 {
-                    std::cin.clear();
-
                     // get the player's input
                     // 获取玩家的输入
-                    if ((GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W')) && key != 's')
-                    {
-                        key = 'w';
-                    }
-                    else if ((GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S')) && key != 'w')
-                    {
-                        key = 's';
-                    }
-                    else if ((GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A')) && key != 'd')
-                    {
-                        key = 'a';
-                    }
-                    else if ((GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D')) && key != 'a')
-                    {
-                        key = 'd';
-                    }
+                    key = getPlayerInput();
+
                     if (pHead->move(pHead, key))
                     {
                         break;
@@ -635,19 +712,23 @@ int main()
                     }
                 }
 
+                // stop the background music
+                // 停止背景音乐
+                PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
                 system("cls");
 
                 // show the game over message
                 // 显示游戏结束信息
-                gotoxy(width / 2 - 4, height / 2);
-                std::cout << "Score: " << score;
+                gotoxy(width / 2, height / 2);
+                std::cout << "Score 分数: " << score;
                 if (score > 0)
                 {
                     scoreEntry entry{name, score};
                     updateLeaderboard("leaderboard.txt", entry);
                 }
                 gotoxy(width / 2 - 10, height / 2 + 1);
-                std::cout << "Game Over! Again? (y/n)";
+                std::cout << "Game Over! Again? 游戏结束!是否重新开始? (y/n)";
 
                 // clear the input buffer of the console
                 // 清空控制台的输入缓冲区
@@ -659,7 +740,7 @@ int main()
                 // get the player's choice
                 // 获取玩家的选择
                 char c = _getch();
-                while (c != 'y' && c != 'n' && c != 'Y' && c != 'N')
+                while (c != 'y' && c != 'n')
                 {
                     // 清空控制台的输入缓冲区
                     while (_kbhit())
@@ -671,13 +752,13 @@ int main()
 
                 // if the player chooses to exit the game
                 // 如果玩家选择退出游戏
-                if (c == 'n' || c == 'N')
+                if (c == 'n')
                 {
                     // break the loop
                     // 退出循环
                     break;
                 }
-                else if (c == 'y' || c == 'Y')
+                else if (c == 'y')
                 {
                     // continue the game
                     // 继续游戏
@@ -691,7 +772,7 @@ int main()
         {
             system("cls");
             gotoxy(width / 2, height / 2);
-            std::cout << "Invalid input!" << std::endl;
+            std::cout << "Invalid input! 非法输入!" << std::endl;
             gotoxy(width / 2 - 4, height / 2 + 1);
             system("pause");
         }
