@@ -1,18 +1,14 @@
-#include <iostream>
-#include <string>
-#include <vector>
+﻿#include <iostream>
 #include <random>
 #include <stdint.h>
 #include <windows.h>
-#include <wchar.h>
 #include <conio.h>
 #include <fstream>
 #include <algorithm>
-#include <mmsystem.h>
-#include <limits>
-#include <stack>
 #include <memory>
 #include <map>
+
+#pragma execution_character_set("utf-8")  
 
 enum Direction
 {
@@ -75,11 +71,11 @@ void gotoxy(int16_t x, int16_t y)
 void showMenu()
 {
     gotoxy(width / 2 - 4, height / 2);
-    std::cout << "1. Start Game" << std::endl;
+    std::cout << "1. Start Game 开始游戏" << std::endl;
     gotoxy(width / 2 - 4, height / 2 + 1);
-    std::cout << "2. Show Rank" << std::endl;
+    std::cout << "2. Show Rank 显示排行榜" << std::endl;
     gotoxy(width / 2 - 4, height / 2 + 2);
-    std::cout << "3. Exit" << std::endl;
+    std::cout << "3. Exit 退出" << std::endl;
 }
 
 // Hide the cursor
@@ -533,7 +529,7 @@ int main()
     {
         std::ofstream file("player.txt");
         gotoxy(width / 2 - 4, height / 2 - 2);
-        std::cout << "Please enter your name: ";
+        std::cout << "Please enter your name 请输入您的名字: ";
         std::cin >> name;
 
         file << name;
@@ -581,7 +577,7 @@ int main()
         {
             system("cls");
             gotoxy(width / 2 - 4, height / 2);
-            std::cout << "Rank: " << std::endl;
+            std::cout << "Rank 排名: " << std::endl;
             printLeaderboard("leaderboard.txt");
             gotoxy(width / 2 - 4, height / 2 + 11);
             system("pause");
