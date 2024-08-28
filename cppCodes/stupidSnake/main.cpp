@@ -8,7 +8,7 @@
 #include <memory>
 #include <map>
 
-#pragma execution_character_set("utf-8")  
+#pragma execution_character_set("utf-8")
 
 enum Direction
 {
@@ -40,16 +40,25 @@ std::map<Direction, Direction> unAllowedKey = {
     {Direction::RIGHT, Direction::LEFT},
 };
 
-// Judge whether the game is over
 // 判断游戏是否结束
 bool game_over = false;
 
-// The width and height of the game map
 // 游戏地图的宽度和高度
 int32_t width = 50;
 int32_t height = 25;
 
-// The entry of the leaderboard
+// 游戏地图蛇的位置
+bool map[50][25];
+
+// 玩家的名字
+std::string name = "player";
+
+// 游戏速度
+int32_t speed = 5;
+
+// 玩家的分数
+int32_t score = 0;
+
 // 排行榜的条目
 struct scoreEntry
 {
@@ -57,7 +66,6 @@ struct scoreEntry
     int32_t score;
 };
 
-// Set the position of the cursor
 // 设置光标的位置
 void gotoxy(int16_t x, int16_t y)
 {
@@ -66,7 +74,6 @@ void gotoxy(int16_t x, int16_t y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-// Show the menu
 // 显示菜单
 void showMenu()
 {
@@ -78,20 +85,16 @@ void showMenu()
     std::cout << "3. Exit 退出" << std::endl;
 }
 
-// Hide the cursor
 // 隐藏光标
 void hideCursor()
 {
-    // Get the handle of the console
     // 获取控制台的句柄
     CONSOLE_CURSOR_INFO cursor_info = {1, 0};
 
-    // Set the cursor to be invisible
     // 将光标设置为不可见
     SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
 }
 
-// Show the map
 // 显示地图
 void showMap()
 {
@@ -118,41 +121,33 @@ void showMap()
     }
 }
 
-// Read the leaderboard
 // 读取排行榜
 std::vector<scoreEntry> readLeaderboard(const std::string &filename)
 {
-    // Create a vector to store the leaderboard
     // 创建一个向量来存储排行榜
     std::vector<scoreEntry> leaderboard;
 
-    // Open the leaderboard file
     // 打开排行榜文件
     std::ifstream file(filename);
 
-    // If the file does not exist, return an empty leaderboard
     // 如果文件不存在，就返回一个空的排行榜
     if (!file)
     {
         return leaderboard;
     }
 
-    // Read the leaderboard from the file
     // 从文件中读取排行榜
     std::string userName;
     int score;
     while (file >> userName >> score)
     {
-        // Add the entry to the leaderboard
         // 将条目添加到排行榜
         leaderboard.push_back({userName, score});
     }
 
-    // Close the file
     // 关闭文件
     file.close();
 
-    // Return the leaderboard
     // 返回排行榜
     return leaderboard;
 }
@@ -161,32 +156,26 @@ std::vector<scoreEntry> readLeaderboard(const std::string &filename)
 // 更新排行榜
 void updateLeaderboard(const std::string &filename, scoreEntry &newEntry)
 {
-    // Read the leaderboard from the file
     // 从文件中读取排行榜
     std::vector<scoreEntry> leaderboard = readLeaderboard(filename);
 
-    // Add the new entry to the leaderboard
     // 将新的条目添加到排行榜
     leaderboard.push_back(newEntry);
 
-    // Sort the leaderboard
     // 对排行榜进行排序
     std::sort(leaderboard.begin(), leaderboard.end(), [](const scoreEntry &a, const scoreEntry &b)
               { return a.score > b.score; });
 
-    // If the size of the leaderboard is greater than 10, delete the last element
     // 如果排行榜的大小大于10，就删除最后的元素
     if (leaderboard.size() > 10)
     {
         leaderboard.pop_back();
     }
 
-    // Delete the data in the file
     // 删除文件中的数据
     std::ofstream file_writer(filename, std::ios_base::out);
     file_writer.close();
 
-    // Write the leaderboard to the file
     // 将排行榜写入文件
     std::fstream file(filename);
     for (const auto &entry : leaderboard)
@@ -196,48 +185,51 @@ void updateLeaderboard(const std::string &filename, scoreEntry &newEntry)
     file.close();
 }
 
-// Print the leaderboard
 // 打印排行榜
 void printLeaderboard(const std::string &filename)
 {
-    // Read the leaderboard from the file
+    // 清空控制台
+    system("cls");
+
+    // 显示排行榜
+    gotoxy(width / 2 - 4, height / 2);
+    std::cout << "Rank 排名: " << std::endl;
+
     // 从文件中读取排行榜
     std::vector<scoreEntry> leaderboard = readLeaderboard(filename);
 
-    // Print the leaderboard
     // 打印排行榜
-    int i = 1;
-    for (const auto &entry : leaderboard)
+    size_t i = 0;
+
+    for (; i < leaderboard.size(); ++i)
     {
-        gotoxy(width / 2 - 4, height / 2 + i);
-        ++i;
-        std::cout << entry.userName << ": " << entry.score << "\n";
+        gotoxy(width / 2 - 4, height / 2 + i + 1);
+        std::cout << i + 1 << ". " << leaderboard[i].userName << " " << leaderboard[i].score << std::endl;
     }
+
+    // 暂停游戏
+    gotoxy(width / 2 - 4, height / 2 + i + 1);
+    system("pause");
 }
 
-// Get the max score from the leaderboard
 // 从排行榜中获取最高分
 int getMaxScore(const std::string &filename)
 {
-    // Read the leaderboard from the file
     // 从文件中读取排行榜
     std::vector<scoreEntry> leaderboard = readLeaderboard(filename);
 
-    // If the leaderboard is empty, return 0
     // 如果排行榜为空，就返回0
     if (leaderboard.empty())
     {
         return 0;
     }
 
-    // Return the max score
     // 返回最高分
     return leaderboard[0].score;
 }
 
-// Display the score panel
 // 显示分数面板
-void displayTheScorePanel(int32_t score)
+void displayTheScorePanel()
 {
     gotoxy(width + 10, height / 2);
     std::cout << "Score: " << score;
@@ -255,29 +247,67 @@ void displayTheScorePanel(int32_t score)
     std::cout << "d or → : 右";
 }
 
+Direction getPlayerInput(Direction key)
+{
+    auto checkKeyState = [](Direction currentKey, int vkKey, char keyChar, bool &change) -> Direction
+    {
+        if (!change)
+        {
+            return currentKey;
+        }
+
+        if (GetAsyncKeyState(vkKey) || GetAsyncKeyState(keyChar))
+        {
+            auto key = keyToDirection[keyChar];
+            if (unAllowedKey[currentKey] != key)
+            {
+                change = false;
+                return key;
+            }
+        }
+        return currentKey;
+    };
+
+    bool change = true;
+    key = checkKeyState(key, VK_UP, 'W', change);
+    key = checkKeyState(key, VK_DOWN, 'S', change);
+    key = checkKeyState(key, VK_LEFT, 'A', change);
+    key = checkKeyState(key, VK_RIGHT, 'D', change);
+    return key;
+}
+
+void clearKeyStates()
+{
+    GetAsyncKeyState(VK_UP);
+    GetAsyncKeyState(VK_DOWN);
+    GetAsyncKeyState(VK_LEFT);
+    GetAsyncKeyState(VK_RIGHT);
+    GetAsyncKeyState('W');
+    GetAsyncKeyState('S');
+    GetAsyncKeyState('A');
+    GetAsyncKeyState('D');
+}
+
 class food
 {
 public:
     int32_t x;
     int32_t y;
 
-    // Create the food
     // 创建食物
     void createFood()
     {
-        // Generate random number
         // 生成随机数
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<int32_t> dis_x(1, width - 1);
         std::uniform_int_distribution<int32_t> dis_y(1, height - 1);
-        // Set the position of the food
+
         // 设置食物的位置
         x = dis_x(gen);
         y = dis_y(gen);
     }
 
-    // Show the food
     // 显示食物
     void showFood()
     {
@@ -292,127 +322,48 @@ public:
     int32_t x, y;
     std::shared_ptr<snake> next;
     std::shared_ptr<snake> prev;
-    std::shared_ptr<snake> tail;
 
     snake(int32_t x, int32_t y)
     {
         this->x = x;
         this->y = y;
+        map[x][y] = true;
         next = nullptr;
         prev = nullptr;
-        tail = nullptr;
     }
 
-    // Initialize the snake
     // 初始化蛇
-    void initSnake()
+    void initSnake(std::shared_ptr<snake> &tail)
     {
         std::shared_ptr<snake> p = this->next;
         std::shared_ptr<snake> q = std::shared_ptr<snake>(this);
 
-        // Create the snake
         // 创建蛇
         for (int i = 1; i <= 10; ++i)
         {
-            p = std::shared_ptr<snake>(new snake(width / 2 - i, height / 2));
+            int32_t tx = width / 2 - i;
+            int32_t ty = height / 2;
 
-            // Set the next and prev pointer
+            p = std::shared_ptr<snake>(new snake(tx, ty));
+
+            map[tx][ty] = true;
+
             // 设置next和prev指针
             p->prev = q;
             q->next = p;
 
-            // Set the tail pointer
             // 设置tail指针
-            this->tail = p;
+            tail = p;
 
-            // Move the pointer
             // 移动指针
             q = p;
             p = p->next;
         }
     }
 
-    // Judge whether the snake is dead
-    // 判断蛇是否死亡
-    bool isSnakeDeath(std::shared_ptr<snake> pHead)
-    {
-        // Judge whether the snake is out of the map
-        // 判断蛇是否超出地图
-        if (pHead->x <= 0 || pHead->x >= width || pHead->y <= 0 || pHead->y >= height)
-        {
-            return true;
-        }
-
-        // Judge whether the snake bites itself
-        // 判断蛇是否咬到自己
-        std::shared_ptr<snake> temp = tail;
-        // Traverse the snake
-        // 遍历蛇
-        while (temp->prev != pHead)
-        {
-            if (pHead->x == temp->x && pHead->y == temp->y)
-            {
-                return true;
-            }
-            temp = temp->prev;
-        }
-        return false;
-    }
-
-    // Move the snake
-    // 移动蛇
-    bool move(std::shared_ptr<snake> pHead, Direction key)
-    {
-        // Clear the tail of the snake
-        // 清除蛇的尾巴
-        pHead->clearSnake(tail);
-
-        // Move the snake from the tail to the head
-        // 从尾巴到头部移动蛇
-        std::shared_ptr<snake> temp = tail;
-        while (temp != pHead)
-        {
-            temp->x = temp->prev->x;
-            temp->y = temp->prev->y;
-            temp = temp->prev;
-        }
-
-        // Check the key
-        // 检查按键
-        if (key == Direction::UP)
-        {
-            pHead->y--;
-        }
-        else if (key == Direction::DOWN)
-        {
-            pHead->y++;
-        }
-        else if (key == Direction::LEFT)
-        {
-            pHead->x--;
-        }
-        else if (key == Direction::RIGHT)
-        {
-            pHead->x++;
-        }
-
-        // Judge whether the snake is dead
-        // 判断蛇是否死亡
-        if (isSnakeDeath(pHead))
-        {
-            game_over = true;
-        }
-
-        // Return whether the game is over
-        // 返回游戏是否结束
-        return game_over;
-    }
-
-    // Show the snake
     // 显示蛇
     void showSnake()
     {
-        // Traverse the snake
         // 遍历蛇
         snake *temp = this;
         while (temp != nullptr)
@@ -422,108 +373,128 @@ public:
             temp = temp->next.get(); // 使用 get() 获取原始指针
         }
     }
-
-    // Check and create the food
-    // 检查并创建食物
-    void checkAndCreateFood(std::shared_ptr<snake> &pHead, std::unique_ptr<food> &pFood)
-    {
-        // Create the food
-        // 创建食物
-        pFood->createFood();
-
-        // Traverse the snake
-        // 遍历蛇
-        std::shared_ptr<snake> temp(pHead);
-        while (temp != nullptr)
-        {
-            // Judge whether the food is in the snake
-            // 判断食物是否在蛇身上
-            if (temp->x == pFood->x && temp->y == pFood->y)
-            {
-                // Create the food again
-                // 重新创建食物
-                pFood->createFood();
-                temp = pHead;
-            }
-            else
-            {
-                temp = temp->next;
-            }
-        }
-
-        // Show the food
-        // 显示食物
-        pFood->showFood();
-    }
-
-    // Eat the food
-    // 吃食物
-    void eatFood(std::shared_ptr<snake> pHead, std::unique_ptr<food> &pFood, int32_t &score, int32_t &speed)
-    {
-        // Judge whether the snake eats the food
-        // 判断蛇是否吃到食物
-        if (pHead->x == pFood->x && pHead->y == pFood->y)
-        {
-            // Create the food again
-            // 重新创建食物
-            checkAndCreateFood(pHead, pFood);
-
-            // Create a new snake body
-            // 创建一个新的蛇身
-            std::shared_ptr<snake> p(new snake(99, 99));
-            p->prev = pHead->tail;
-            pHead->tail = p;
-
-            // Increase the speed and score
-            // 增加速度和分数
-            if (speed < 15)
-            {
-                speed += 5;
-                score += 10;
-            }
-            else if (speed >= 15 && speed <= 25)
-            {
-                speed += 3;
-                score += 20;
-            }
-            else if (speed >= 25 && speed <= 34)
-            {
-                speed += 2;
-                score += 30;
-            }
-            else
-            {
-                speed++;
-                score += 50;
-            }
-        }
-    }
-
-    // Clear the snake
-    // 清除蛇
-    inline void clearSnake(std::shared_ptr<snake> tail)
-    {
-        gotoxy(tail->x, tail->y);
-        putchar(' ');
-    }
 };
 
-int main()
+// 判断蛇是否死亡
+bool isSnakeDeath(std::shared_ptr<snake> &pHead, std::shared_ptr<snake> &tail)
 {
-    // set the console to utf-8
-    // 将控制台设置为utf-8
-    system("chcp 65001");
+    return pHead->x <= 0 || pHead->x >= width || pHead->y <= 0 || pHead->y >= height || map[pHead->x][pHead->y];
+}
 
-    // play the background music
-    // 播放背景音乐
-    // PlaySound(TEXT("TimeWar.mp3"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+// 清除蛇
+inline void clearSnake(std::shared_ptr<snake> &tail)
+{
+    gotoxy(tail->x, tail->y);
+    putchar(' ');
+    map[tail->x][tail->y] = false;
+}
 
-    // get the player's name
+// 移动蛇
+bool move(std::shared_ptr<snake> &pHead, Direction &key, std::shared_ptr<snake> &tail)
+{
+    // 清除蛇的尾巴
+    clearSnake(tail);
+
+    // 从尾巴到头部移动蛇
+    std::shared_ptr<snake> temp = tail;
+    while (temp != pHead)
+    {
+        temp->x = temp->prev->x;
+        temp->y = temp->prev->y;
+        temp = temp->prev;
+    }
+
+    // 检查按键
+    if (key == Direction::UP)
+    {
+        pHead->y--;
+    }
+    else if (key == Direction::DOWN)
+    {
+        pHead->y++;
+    }
+    else if (key == Direction::LEFT)
+    {
+        pHead->x--;
+    }
+    else if (key == Direction::RIGHT)
+    {
+        pHead->x++;
+    }
+
+    // 判断蛇是否死亡
+    if (isSnakeDeath(pHead, tail))
+    {
+        game_over = true;
+    }
+
+    // 设置蛇的位置
+    map[pHead->x][pHead->y] = true;
+
+    // 返回游戏是否结束
+    return game_over;
+}
+
+// 检查并创建食物
+void checkAndCreateFood(std::shared_ptr<snake> &pHead, std::unique_ptr<food> &pFood)
+{
+    // 创建食物
+    pFood->createFood();
+
+    // 判断食物是否在蛇的身体上
+    while (map[pFood->x][pFood->y])
+    {
+        pFood->createFood();
+    }
+
+    // 显示食物
+    pFood->showFood();
+}
+
+// 吃食物
+void eatFood(std::shared_ptr<snake> &pHead, std::unique_ptr<food> &pFood, std::shared_ptr<snake> &tail)
+{
+    // 判断蛇是否吃到食物
+    if (pHead->x == pFood->x && pHead->y == pFood->y)
+    {
+        // 重新创建食物
+        checkAndCreateFood(pHead, pFood);
+
+        // 创建一个新的蛇身
+        std::shared_ptr<snake> p(new snake(99, 99));
+        p->prev = tail;
+        tail = p;
+
+        // 增加速度和分数
+        if (speed < 15)
+        {
+            speed += 5;
+            score += 10;
+        }
+        else if (speed >= 15 && speed <= 25)
+        {
+            speed += 3;
+            score += 20;
+        }
+        else if (speed >= 25 && speed <= 34)
+        {
+            speed += 2;
+            score += 30;
+        }
+        else
+        {
+            speed++;
+            score += 50;
+        }
+    }
+}
+
+// 检查玩家的名字
+void nameCheck()
+{
     // 获取玩家的名字
-    std::string name;
     std::ifstream file("player.txt");
 
-    // if the file is empty, let the player enter his name
     // 如果文件为空，就让玩家输入他的名字
     if (file.peek() == EOF)
     {
@@ -536,233 +507,187 @@ int main()
     }
     else
     {
-        // read the player's name from the file
         // 从文件中读取玩家的名字
         file >> name;
     }
 
-    // close the file
     // 关闭文件
     file.close();
+}
 
-    // the main loop of the game
-    // 游戏的主循环
+// 播放背景音乐
+void playSound()
+{
+    // 检查背景音乐是否存在
+    if (GetFileAttributes(TEXT("bgm.wav")) == INVALID_FILE_ATTRIBUTES)
+    {
+        system("cls");
+        gotoxy(width / 2, height / 2);
+        std::cout << "BGM file not found! BGM文件未找到!" << std::endl;
+        gotoxy(width / 2 - 4, height / 2 + 1);
+        system("pause");
+    }
+    else
+    {
+        PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+    }
+}
+
+void mapClear()
+{
+    for (int32_t i = 0; i < width; ++i)
+    {
+        for (int32_t j = 0; j < height; ++j)
+        {
+            map[i][j] = false;
+        }
+    }
+}
+
+// 显示游戏结束信息
+void gameOver()
+{
+    gotoxy(width / 2, height / 2);
+    std::cout << "Score 分数: " << score;
+    if (score > 0)
+    {
+        scoreEntry entry{name, score};
+        updateLeaderboard("leaderboard.txt", entry);
+    }
+    gotoxy(width / 2 - 10, height / 2 + 1);
+    std::cout << "Game Over! Again? 游戏结束!是否重新开始? (y/n)";
+
+    // 清空地图
+    mapClear();
+
+    // 重置分数和速度
+    score = 0;
+    speed = 5;
+
+    // 获取玩家的选择
+    char c = _getch();
+    while (c != 'y' && c != 'n')
+    {
+        // 清空控制台的输入缓冲区
+        while (_kbhit())
+        {
+            _getch();
+        }
+        c = _getch();
+    }
+
+    if (c == 'y')
+    {
+        game_over = false;
+    }
+}
+
+void tick()
+{
+    std::shared_ptr<snake> pHead(new snake(width / 2, height / 2));
+    std::shared_ptr<snake> tail = pHead;
+
+    std::unique_ptr<food> pFood(new food);
+
+    system("cls");
+    showMap();
+    pHead->initSnake(tail);
+    checkAndCreateFood(pHead, pFood);
+    pHead->showSnake();
+
+    // 蛇的默认方向是向右
+    Direction key = Direction::RIGHT;
+
+    // 清除按键状态
+    clearKeyStates();
+
+    while (!game_over)
+    {
+        // 获取玩家的输入
+        key = getPlayerInput(key);
+
+        if (move(pHead, key, tail))
+        {
+            break;
+        }
+
+        // 检查食物
+        eatFood(pHead, pFood, tail);
+
+        // 显示蛇和食物
+        pFood->showFood();
+        pHead->showSnake();
+
+        // 显示分数面板
+        displayTheScorePanel();
+
+        // 控制游戏的速度
+        if (key == 'a' || key == 'd')
+        {
+            Sleep(60 - speed * 0.7);
+        }
+        else
+        {
+            Sleep(80 - speed);
+        }
+    }
+
+    // 停止背景音乐
+    PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+
+    system("cls");
+
+    gameOver();
+}
+
+// 开始游戏
+void gameStart()
+{
+    game_over = false;
+
+    while (!game_over)
+    {
+        // 播放背景音乐
+        playSound();
+
+        tick();
+    }
+}
+
+// 游戏的主循环
+void work()
+{
     while (true)
     {
-        // clear the console
         // 清空控制台
         system("cls");
 
-        // hide the cursor
         // 隐藏光标
         hideCursor();
 
-        // show the menu
         // 显示菜单
         showMenu();
 
-        // get the player's choice
         // 获取玩家的选择
         char choice = _getch();
 
-        // break the loop
         // 退出循环
         if (choice == '3')
         {
             break;
         }
-        // print the leaderboard
         // 打印排行榜
         else if (choice == '2')
         {
-            system("cls");
-            gotoxy(width / 2 - 4, height / 2);
-            std::cout << "Rank 排名: " << std::endl;
             printLeaderboard("leaderboard.txt");
-            gotoxy(width / 2 - 4, height / 2 + 11);
-            system("pause");
             continue;
         }
-        // start the game
         // 开始游戏
         else if (choice == '1')
         {
-            // start the game
-            // 开始游戏
-            game_over = false;
-
-            while (!game_over)
-            {
-                // check is BGM exist
-                // 检查背景音乐是否存在
-                if (GetFileAttributes(TEXT("bgm.wav")) == INVALID_FILE_ATTRIBUTES)
-                {
-                    system("cls");
-                    gotoxy(width / 2, height / 2);
-                    std::cout << "BGM file not found! BGM文件未找到!" << std::endl;
-                    gotoxy(width / 2 - 4, height / 2 + 1);
-                    system("pause");
-                    continue;
-                }
-                else
-                {
-                    PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-                    PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-                }
-
-                std::shared_ptr<snake> pHead(new snake(width / 2, height / 2));
-                std::unique_ptr<food> pFood(new food);
-
-                int32_t speed = 5;
-                int32_t score = 0;
-
-                system("cls");
-                showMap();
-                pHead->initSnake();
-                pHead->checkAndCreateFood(pHead, pFood);
-                pHead->showSnake();
-
-                // 检查按键状态的函数
-                auto checkKeyState = [](Direction currentKey, int vkKey, char keyChar, bool &change) -> Direction
-                {
-                    if (!change)
-                    {
-                        return currentKey;
-                    }
-
-                    if (GetAsyncKeyState(vkKey) || GetAsyncKeyState(keyChar))
-                    {
-                        auto key = keyToDirection[keyChar];
-                        if (unAllowedKey[currentKey] != key)
-                        {
-                            change = false;
-                            return key;
-                        }
-                    }
-                    return currentKey;
-                };
-
-                // 清除按键状态的函数
-                auto clearKeyStates = []() -> void
-                {
-                    GetAsyncKeyState(VK_UP);
-                    GetAsyncKeyState(VK_DOWN);
-                    GetAsyncKeyState(VK_LEFT);
-                    GetAsyncKeyState(VK_RIGHT);
-                    GetAsyncKeyState('W');
-                    GetAsyncKeyState('S');
-                    GetAsyncKeyState('A');
-                    GetAsyncKeyState('D');
-                };
-
-                // the default direction of the snake is right
-                // 蛇的默认方向是向右
-                Direction key = Direction::RIGHT;
-
-                auto getPlayerInput = [&]() -> Direction
-                {
-                    bool change = true;
-
-                    key = checkKeyState(key, VK_UP, 'W', change);
-                    key = checkKeyState(key, VK_DOWN, 'S', change);
-                    key = checkKeyState(key, VK_LEFT, 'A', change);
-                    key = checkKeyState(key, VK_RIGHT, 'D', change);
-                    return key;
-                };
-
-                // 清除按键状态
-                clearKeyStates();
-
-                while (!game_over)
-                {
-                    // get the player's input
-                    // 获取玩家的输入
-                    key = getPlayerInput();
-
-                    if (pHead->move(pHead, key))
-                    {
-                        break;
-                    }
-                    // check and eat the food
-                    // 检查食物
-                    pHead->eatFood(pHead, pFood, score, speed);
-
-                    // show the snake and the food
-                    // 显示蛇和食物
-                    pFood->showFood();
-                    pHead->showSnake();
-
-                    // display the score panel
-                    // 显示分数面板
-                    displayTheScorePanel(score);
-
-                    // control the speed of the game
-                    // 控制游戏的速度
-                    if (key == 'a' || key == 'd')
-                    {
-                        Sleep(60 - speed * 0.7);
-                    }
-                    else
-                    {
-                        Sleep(80 - speed);
-                    }
-                }
-
-                // stop the background music
-                // 停止背景音乐
-                PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-
-                system("cls");
-
-                // show the game over message
-                // 显示游戏结束信息
-                gotoxy(width / 2, height / 2);
-                std::cout << "Score 分数: " << score;
-                if (score > 0)
-                {
-                    scoreEntry entry{name, score};
-                    updateLeaderboard("leaderboard.txt", entry);
-                }
-                gotoxy(width / 2 - 10, height / 2 + 1);
-                std::cout << "Game Over! Again? 游戏结束!是否重新开始? (y/n)";
-
-                // clear the input buffer of the console
-                // 清空控制台的输入缓冲区
-                while (_kbhit())
-                {
-                    _getch();
-                }
-
-                // get the player's choice
-                // 获取玩家的选择
-                char c = _getch();
-                while (c != 'y' && c != 'n')
-                {
-                    // 清空控制台的输入缓冲区
-                    while (_kbhit())
-                    {
-                        _getch();
-                    }
-                    c = _getch();
-                }
-
-                // if the player chooses to exit the game
-                // 如果玩家选择退出游戏
-                if (c == 'n')
-                {
-                    // break the loop
-                    // 退出循环
-                    break;
-                }
-                else if (c == 'y')
-                {
-                    // continue the game
-                    // 继续游戏
-                    game_over = false;
-                }
-            }
+            gameStart();
         }
-        // if the player enters an invalid input
         // 如果玩家输入了无效的输入
         else
         {
@@ -773,6 +698,16 @@ int main()
             system("pause");
         }
     }
+}
+
+int main()
+{
+    // 将控制台设置为utf-8
+    system("chcp 65001");
+
+    nameCheck();
+
+    work();
 
     return 0;
 }
