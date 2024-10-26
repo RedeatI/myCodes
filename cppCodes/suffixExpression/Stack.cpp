@@ -22,14 +22,6 @@ void myStack::deStack(string &res)
     front--;
 }
 
-bool myStack::isStackEmpty()
-{
-    if (front < 0)
-        return true;
-    else
-        return false;
-}
-
 bool isPriorityHigher(char first, char second)
 {
     if (second == '*' || second == '/' || second == '%')

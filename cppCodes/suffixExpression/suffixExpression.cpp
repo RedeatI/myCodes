@@ -6,6 +6,14 @@
 #include <iostream>
 using namespace std;
 
+bool myStack::isStackEmpty()
+{
+    if (front < 0)
+        return true;
+    else
+        return false;
+}
+
 int main()
 {
     string t;

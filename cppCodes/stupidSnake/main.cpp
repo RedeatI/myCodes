@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <memory>
 #include <map>
+#include <string>
 
 #pragma execution_character_set("utf-8")
 
@@ -18,6 +19,7 @@ enum Direction
     RIGHT
 };
 
+// 按键映射
 std::map<char, Direction> keyToDirection = {
     {'w', Direction::UP},
     {'s', Direction::DOWN},
@@ -44,8 +46,8 @@ std::map<Direction, Direction> unAllowedKey = {
 bool game_over = false;
 
 // 游戏地图的宽度和高度
-int32_t width = 50;
-int32_t height = 25;
+const int32_t width = 50;
+const int32_t height = 25;
 
 // 游戏地图蛇的位置
 bool map[50][25];
@@ -69,8 +71,7 @@ struct scoreEntry
 // 设置光标的位置
 void gotoxy(int16_t x, int16_t y)
 {
-    COORD coord;
-    coord = {x, y};
+    COORD coord = {x, y};
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
@@ -247,6 +248,7 @@ void displayTheScorePanel()
     std::cout << "d or → : 右";
 }
 
+// 获取玩家的输入
 Direction getPlayerInput(Direction key)
 {
     auto checkKeyState = [](Direction currentKey, int vkKey, char keyChar, bool &change) -> Direction
@@ -276,6 +278,7 @@ Direction getPlayerInput(Direction key)
     return key;
 }
 
+// 清除按键状态
 void clearKeyStates()
 {
     GetAsyncKeyState(VK_UP);
@@ -516,10 +519,10 @@ void nameCheck()
 }
 
 // 播放背景音乐
-void playSound()
+void playSound(auto bgm_path)
 {
     // 检查背景音乐是否存在
-    if (GetFileAttributes(TEXT("bgm.wav")) == INVALID_FILE_ATTRIBUTES)
+    if (GetFileAttributes(bgm_path) == INVALID_FILE_ATTRIBUTES)
     {
         system("cls");
         gotoxy(width / 2, height / 2);
@@ -530,7 +533,7 @@ void playSound()
     else
     {
         PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
-        PlaySound(TEXT("bgm.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
+        PlaySound(bgm_path, NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);
     }
 }
 
@@ -583,6 +586,7 @@ void gameOver()
     }
 }
 
+// 游戏的主循环
 void tick()
 {
     std::shared_ptr<snake> pHead(new snake(width / 2, height / 2));
@@ -646,10 +650,14 @@ void gameStart()
 {
     game_over = false;
 
+    // 背景音乐的路径
+    auto bgm_path = TEXT("bgm.wav");
+
     while (!game_over)
     {
+
         // 播放背景音乐
-        playSound();
+        playSound(bgm_path);
 
         tick();
     }
@@ -672,16 +680,15 @@ void work()
         // 获取玩家的选择
         char choice = _getch();
 
-        // 退出循环
+        // 退出游戏
         if (choice == '3')
         {
-            break;
+            exit(0);
         }
         // 打印排行榜
         else if (choice == '2')
         {
             printLeaderboard("leaderboard.txt");
-            continue;
         }
         // 开始游戏
         else if (choice == '1')

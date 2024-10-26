@@ -20,6 +20,26 @@
             // 指定调试器所在路径，注意间隔是\\,请修改为你的路径
             // 指定调试器所在路径，注意间隔是\\,请修改为你的路径
             "preLaunchTask": "C/C++: g++.exe 生成活动文件" // 调试开始前执行的任务(任务依赖),与tasks.json的label相对应
+        },
+        { //‘调试(Debug)
+            "name": "C/C++: g++.exe 生成活动文件",
+            "type": "cppdbg",
+            // cppdbg对应cpptools提供的调试功能；只能是cppdbg
+            "request": "launch",
+            //这里program指编译好的exe可执行文件的路径,与tasks中要对应
+            "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
+            "args": [],
+            "stopAtEntry": false, // 这里改为true作用等同于在main处打断点
+            "cwd": "${fileDirname}", // 调试程序时的工作目录,即为源代码所在目录,不用改
+            "environment": [],
+            "externalConsole": false, // 改为true时为使用cmd终端,推荐使用vscode内部终端
+            "internalConsoleOptions": "neverOpen", // 设为true为调试时聚焦调试控制台,新手用不到
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:\\mingw64\\bin\\gdb.exe",
+            // 指定调试器所在路径，注意间隔是\\,请修改为你的路径
+            // 指定调试器所在路径，注意间隔是\\,请修改为你的路径
+            // 指定调试器所在路径，注意间隔是\\,请修改为你的路径
+            "preLaunchTask": "C/C++: g++.exe 生成活动文件" // 调试开始前执行的任务(任务依赖),与tasks.json的label相对应
         }
     ]
 }
